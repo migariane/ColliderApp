@@ -3,8 +3,7 @@ library(shinythemes)
 library(ggplot2)
 library(readr) # For write_csv
 library(dplyr)
-library(visreg) # Model visulization
-
+library(visreg) # Model visualization
 generateData <- function(beta1,beta2,n){
     age <- rnorm(n, 65, 5)
     sodium  <- age/15 + rnorm(n) 
@@ -12,13 +11,9 @@ generateData <- function(beta1,beta2,n){
     proteinurie  <-  beta1*sbp + beta2*age - 0.9*sodium + rnorm(n)
     data.frame(sbp,age,sodium,proteinurie)
 }
-
 ui <- fluidPage(theme=shinytheme("cosmo"),
-   
   titlePanel(HTML("<b>Collider</b>: a Shiny app"),windowTitle = "Collider"),
-  
   sidebarLayout(
-    
     sidebarPanel(width = 3,
 
       #Inicialización MathJax para poder incluir fórmulas en LaTeX
@@ -27,32 +22,32 @@ ui <- fluidPage(theme=shinytheme("cosmo"),
       #Model Selection
       h3("Model selection:"),
       checkboxInput(inputId = "modelA", 
-                    label = h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}$$")),
+                    label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}$$")),style="margin-top:-10px"),
                     value=TRUE
                     ),
       
       checkboxInput(inputId = "modelB", 
-                    label = h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}+\\beta_{2}\\text{SOD}$$")),
+                    label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}+\\beta_{2}\\text{SOD}$$")),style="margin-top:-10px"),
                     value=TRUE
                     ),
       
       checkboxInput(inputId = "modelC", 
-                    label = h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{ AGE}+\\beta_{2}\\text{SOD}+\\beta_{3}\\text{PRO}$$")),
+                    label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{ AGE}+\\beta_{2}\\text{SOD}+\\beta_{3}\\text{PRO}$$")),style="margin-top:-10px"),
                     value=TRUE
                     ),
       
       hr(),
       
       #Slider coeficientes
-      h5(withMathJax("Collider Model: $$\\text{PRO}=\\beta_{0}+\\beta_{1}\\text{AGE}+\\beta_{2}\\text{SBP}$$")),
+      h5(withMathJax("Collider Model: $$\\text{PRO}=\\beta_{0}+\\beta_{1}\\text{AGE}+\\beta_{2}\\text{SBP}+\\beta_{3}\\text{SOD}$$")),
       h6("Move the input slider to visualize the collider"),
       
       sliderInput(inputId = "beta1", 
                   label = h5(withMathJax("$$\\beta_1\\text{(Effect of SBP on PRO)}$$")),
                   min=-2,
                   max=2,
-                  step=0.01,
-                  value=1.2,
+                  step=0.05,
+                  value=1.2
                   #animate = animationOptions(interval = 10, loop = FALSE)
                   ),
      
@@ -60,8 +55,8 @@ ui <- fluidPage(theme=shinytheme("cosmo"),
                   label = h5(withMathJax("$$\\beta_2\\text{(Effect of AGE on PRO)} $$")),
                   min=-2,
                   max=2,
-                  step=0.01,
-                  value=1.8,
+                  step=0.05,
+                  value=1.8
                   #animate = animationOptions(interval = 10, loop = FALSE)
                   ),
      
@@ -174,7 +169,12 @@ ui <- fluidPage(theme=shinytheme("cosmo"),
                  hr()
                  ),
         
-        # Tab 4: Authorship & Acknowledgment
+        #Tab 4: Article
+        tabPanel("Article",br(),br(),
+                 uiOutput("article"))
+        ,
+        
+        # Tab 5: Authorship & Acknowledgment
         tabPanel("Credits & Acknowledgment",
                  
                  #Authorship
@@ -190,7 +190,7 @@ ui <- fluidPage(theme=shinytheme("cosmo"),
                  
                  fluidRow(column(2,img(src="logo_DRS.png",width="100px")),
                           column(10,h4(tags$b("Daniel Redondo Sánchez")),
-                          h4("Biomedical Research Institute of Granada, Non‐Communicable and Cancer Epidemiology Group (ibs.Granada), University of Granada"),
+                          h4("Biomedical Research Institute of Granada, Non‐Communicable and Cancer Epidemiology Group (ibs.Granada), University of Granada."),
                           h4("Andalusian School of Public Health"),
                           tags$i(h5("daniel.redondo.easp at juntadeandalucia.es")))
                           ),
@@ -216,10 +216,7 @@ ui <- fluidPage(theme=shinytheme("cosmo"),
                           )
                  )
                   
-      )
-    ) 
-  )
-)
+      ))))
 
 #Server function
 server <- function(input, output) {
@@ -258,24 +255,25 @@ grafico3<-reactive({visreg(fit3(), points=list(cex=1.5, pch=1), jitter=10,bty="n
 #Figures
 output$gA1<-renderPlot({
   if(input$modelA==TRUE) plot(grafico1(),gg=TRUE,ylab="SBP (mmHg)",xlab="Age (years)",
-                              points=list(size=2, pch=1,a=0.4,col="snow3"), line=list(col="blue",size=1.3))+ theme_classic()
+                              points=list(size=2, pch=1,alpha=0.4,col="snow3"), line=list(col="blue",size=1.3))+ theme_classic()
 })
 
 output$gB1<-renderPlot({
   if(input$modelB==TRUE) plot(grafico2()[[1]],gg=TRUE,ylab="SBP (mmHg)",xlab="Age (years)",
-                              points=list(size=2, pch=1,a=0.4,col="snow3"), line=list(col="blue",size=1.3))+ theme_classic()
+                              points=list(size=2, pch=1,alpha=0.4,col="snow3"), line=list(col="blue",size=1.3))+ theme_classic()
 })
 
 #Positive slope -> blue; negative -> red
 output$gC1<-renderPlot({
         if(input$modelC==TRUE)
           if(fit3()$coefficients["age"]>0) plot(grafico3()[[1]],gg=TRUE,ylab="SBP (mmHg)",xlab="Age (years)",
-                                                points=list(size=2, pch=1,a=0.4,col="snow3"), line=list(col="blue",size=1.3))+ theme_classic()
+                                                points=list(size=2, pch=1,alpha=0.4,col="snow3"), line=list(col="blue",size=1.3))+ theme_classic()
   else 
             plot(grafico3()[[1]],gg=TRUE,ylab="SBP (mmHg)",xlab="Age (years)",
-                 points=list(size=2, pch=1,a=0.4,col="snow3"), line=list(col="red",size=1.3))+ theme_classic()
+                 points=list(size=2, pch=1,alpha=0.4,col="snow3"), line=list(col="red",size=1.3))+ theme_classic()
 })
 
+#Coefficients
 output$coefA<-renderUI({
   if(input$modelA==TRUE)  withMathJax(sprintf("$$ \\beta_{1} = %.03f$$", fit1()$coefficients["age"]))
 })
@@ -291,17 +289,17 @@ output$coefC<-renderUI({
 #Figures from different models 
 output$data.generation.plot1<-renderPlot({
   plot(grafico3()[[1]],gg=TRUE,ylab="SBP (mmHg)",xlab="Age (years)",
-       line=list(col="darkmagenta",size=1.3),points=list(size=2, pch=1,a=0.4,col="snow3"))+ theme_classic()
+       line=list(col="darkmagenta",size=1.3),points=list(size=2, pch=1,alpha=0.4,col="snow3"))+ theme_classic()
 })
 
 output$data.generation.plot2<-renderPlot({
   plot(grafico3()[[2]],gg=TRUE,ylab="SBP (mmHg)",xlab="Proteinurie (mg)",
-       points=list(size=2, pch=1,a=0.4,col="snow3"), line=list(col="darkmagenta",size=1.3))+ theme_classic()
+       points=list(size=2, pch=1,alpha=0.4,col="snow3"), line=list(col="darkmagenta",size=1.3))+ theme_classic()
 })
 
 output$data.generation.plot3<-renderPlot({
   plot(grafico3()[[3]],gg=TRUE,ylab="SBP (mmHg)",xlab="Sodium (g)",
-       points=list(size=2, pch=1,a=0.4,col="snow3"), line=list(col="darkmagenta",size=1.3))+ theme_classic()
+       points=list(size=2, pch=1,alpha=0.4,col="snow3"), line=list(col="darkmagenta",size=1.3))+ theme_classic()
 })
 
 #Download data
@@ -313,6 +311,11 @@ output$download_data <- downloadHandler(
             write_csv(ObsData(), file) 
           }
     )
+
+#Article
+output$article <- renderUI({
+    tags$iframe(style="height:700px; width:100%", src="Paper_Collider.pdf")
+})
 
 }
 
