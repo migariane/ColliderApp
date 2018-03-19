@@ -12,10 +12,10 @@ generateData <- function(beta1,beta2,n){
     proteinurie  <-  beta1 * sbp + beta2*age - 0.9 * sodium + rnorm(n)
     data.frame(sbp,age,sodium,proteinurie)
 }
-ui <- fluidPage(theme=shinytheme("cosmo"),
-  titlePanel(HTML("<b>Collider</b>: a Shiny app"),windowTitle = "Collider"),
-  sidebarLayout(
-    sidebarPanel(width = 3,
+ui <- fluidPage(theme = shinytheme("cosmo"),
+      titlePanel(HTML("<b>Collider</b>: a Shiny app"), windowTitle = "Collider"),
+      sidebarLayout(
+      sidebarPanel(width = 3,
 
       # Inicialización MathJax para poder incluir fórmulas en LaTeX
       withMathJax(),
@@ -24,17 +24,17 @@ ui <- fluidPage(theme=shinytheme("cosmo"),
       h3("Model selection:"),
       checkboxInput(inputId = "modelA", 
                     label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}$$")),style="margin-top:-10px"),
-                    value=TRUE
+                    value = TRUE
                     ),
       
       checkboxInput(inputId = "modelB", 
                     label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}+\\beta_{2}\\text{SOD}$$")),style="margin-top:-10px"),
-                    value=TRUE
+                    value = TRUE
                     ),
       
       checkboxInput(inputId = "modelC", 
                     label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{ AGE}+\\beta_{2}\\text{SOD}+\\beta_{3}\\text{PRO}$$")),style="margin-top:-10px"),
-                    value=TRUE
+                    value = TRUE
                     ),
       
       hr(), 
@@ -45,19 +45,19 @@ ui <- fluidPage(theme=shinytheme("cosmo"),
       
       sliderInput(inputId = "beta1", 
                   label = h5(withMathJax("$$\\alpha_1\\text{(Effect of SBP on PRO)}$$")),
-                  min=0.5,
-                  max=5,
-                  step=0.05,
-                  value=1.2
+                  min = 0.5,
+                  max = 5,
+                  step = 0.05,
+                  value = 1.2
                   # animate = animationOptions(interval = 10, loop = FALSE)
                   ),
      
       sliderInput(inputId = "beta2", 
                   label = h5(withMathJax("$$\\alpha_2\\text{(Effect of AGE on PRO)} $$")),
-                  min=0.5,
-                  max=5,
-                  step=0.05,
-                  value=1.8
+                  min = 0.5,
+                  max = 5,
+                  step = 0.05,
+                  value = 1.8
                   #animate = animationOptions(interval = 10, loop = FALSE)
                   ),
      
@@ -75,7 +75,7 @@ ui <- fluidPage(theme=shinytheme("cosmo"),
         
         # Tab 0: Welcome
         tabPanel("Welcome",br(),br(),
-                 div(img(src="logo.png",width="450px"),style="text-align:center;")
+                 div(img(src = "logo.png", width ="450px"), style = "text-align:center;")
                  ),
         
         # Tab 1: DAG
@@ -83,7 +83,7 @@ ui <- fluidPage(theme=shinytheme("cosmo"),
                  h2("Directed Acyclic Graphs"),br(),
                  
                  # No model
-                 conditionalPanel(condition="input.modelA==false && input.modelB==false &&input.modelC==false",
+                 conditionalPanel(condition = "input.modelA==false && input.modelB==false &&input.modelC==false",
                                   h3(tags$b("Please select a model")),
                                   hr()
                                   ),
@@ -103,9 +103,9 @@ ui <- fluidPage(theme=shinytheme("cosmo"),
                                   ),
                
                  # Model C
-                 conditionalPanel(condition="input.modelC==true",
+                 conditionalPanel(condition = "input.modelC==true",
                                   h4(withMathJax("$$\\text{Model 3, SBP} = \\beta_{0} + \\beta_{1}  \\text{ AGE} + \\beta_{2} \\text{SOD} + \\beta_{3} \\text{PRO}$$")),
-                                  div(img(src="dagC.png",width="600px"),style="text-align:center;"),
+                                  div(img(src = "dagC.png", width = "600px"), style = "text-align:center;"),
                                   hr()
                                   )
                  ),
@@ -114,25 +114,25 @@ ui <- fluidPage(theme=shinytheme("cosmo"),
         tabPanel("Collider Visualization",
                  h3("Effect of Age on SPB for different models' specifications: collider m3"),br(),
                  # No model
-                 conditionalPanel(condition="input.modelA==false && input.modelB==false && input.modelC==false",
+                 conditionalPanel(condition = "input.modelA==false && input.modelB==false && input.modelC==false",
                                   h3(tags$b("Please select a model")),
                                   hr()
                                   ),
 
                  # Models: formula + plot + beta1
-                 fluidRow(column(4,h4(uiOutput("formulaA"))),
-                          column(4,h4(uiOutput("formulaB"))),
-                          column(4,h4(uiOutput("formulaC")))
+                 fluidRow(column(4, h4(uiOutput("formulaA"))),
+                          column(4, h4(uiOutput("formulaB"))),
+                          column(4, h4(uiOutput("formulaC")))
                           ),
                  
-                 fluidRow(column(4,plotOutput("gA1"),style='padding:0px;'),
-                          column(4,plotOutput("gB1"),style='padding:0px;'),
-                          column(4,plotOutput("gC1"),style='padding:0px;')
+                 fluidRow(column(4, plotOutput("gA1"), style = 'padding:0px;'),
+                          column(4, plotOutput("gB1"), style = 'padding:0px;'),
+                          column(4, plotOutput("gC1"), style = 'padding:0px;')
                           ),
                  
-                 fluidRow(column(4,h4(uiOutput("coefA"))),
-                          column(4,h4(uiOutput("coefB"))),
-                          column(4,h4(uiOutput("coefC")))
+                 fluidRow(column(4, h4(uiOutput("coefA"))),
+                          column(4, h4(uiOutput("coefB"))),
+                          column(4, h4(uiOutput("coefC")))
                  ),
 
                  hr()
@@ -150,22 +150,22 @@ ui <- fluidPage(theme=shinytheme("cosmo"),
                         "proteinurie  <- beta1*sbp + beta2*age - 0.9*sodium + rnorm(n)",br(),
                         "data.frame(sbp,age,sodium,proteinurie)",br(),
                         "}",br(),br(),
-                        "set.seed=777", br(),br(),
+                        "set.seed = 777", br(),br(),
                         "head(generateData(1000))",br(),
                         tableOutput("table_generateData"),
-                        style="font-family: 'Courier New'"
+                        style = "font-family: 'Courier New'"
                         ),
                  
-                 downloadButton(outputId="download_data", label=tags$b("Download 1.000 simulations (.csv)")),
+                 downloadButton(outputId = "download_data", label = tags$b("Download 1.000 simulations (.csv)")),
                  
                  hr(),
                  
                  # Distribution graphs
                  h3(withMathJax("$$\\text{SBP} = \\beta_{0} + \\beta_{1} \\text{ AGE} + \\beta_{2} \\text{PRO} + \\beta_{3} \\text{SOD}$$")),
                 
-                 fluidRow(column(4,plotOutput("data.generation.plot1"),style='padding:0px;'),
-                          column(4,plotOutput("data.generation.plot2"),style='padding:0px;'),
-                          column(4,plotOutput("data.generation.plot3"),style='padding:0px;')
+                 fluidRow(column(4, plotOutput("data.generation.plot1"), style = 'padding:0px;'),
+                          column(4, plotOutput("data.generation.plot2"), style = 'padding:0px;'),
+                          column(4, plotOutput("data.generation.plot3"), style = 'padding:0px;')
                           ),
                  hr()
                  ),
@@ -203,7 +203,7 @@ ui <- fluidPage(theme=shinytheme("cosmo"),
                  
                  hr(),
                  
-                 fluidRow(column(2,img(src="logo_MS.png",width="100px")),
+                 fluidRow(column(2,img(src = "logo_MS.png", width = "100px")),
                           column(10,h4(tags$b("Michael Schomaker")),
                                  h4("School of Public Health and Family Medicine",br(),
                                     "Center for Infectious Disease Epidemiology and Research",br(),
