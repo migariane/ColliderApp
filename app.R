@@ -182,7 +182,10 @@ ui <- fluidPage(theme=shinytheme("cosmo"),
                  h2("Autorship"),br(),
                  fluidRow(column(2,img(src="logo_MALF.png",width="100px")),
                           column(10,h4(tags$b("Miguel Angel Luque-Fernandez")),
-                          h4("Biomedical Research Institute of Granada, Non‐Communicable and Cancer Epidemiology Group (ibs.Granada), University of Granada."),
+                          h4("Biomedical Research Institute of Granada",br(),
+                             "Non‐Communicable and Cancer Epidemiology Group (ibs.Granada)",br(),
+                             "University of Granada."),
+                          h4("Andalusian School of Public Health"),     
                           h4("London School of Hygiene & Tropical Medicine"),
                           tags$i(h5("miguel.luque.easp at juntadeandalucia.es")))
                           ),
@@ -191,7 +194,9 @@ ui <- fluidPage(theme=shinytheme("cosmo"),
                  
                  fluidRow(column(2,img(src="logo_DRS.png",width="100px")),
                           column(10,h4(tags$b("Daniel Redondo Sánchez")),
-                          h4("Biomedical Research Institute of Granada, Non‐Communicable and Cancer Epidemiology Group (ibs.Granada), University of Granada."),
+                          h4("Biomedical Research Institute of Granada",br(),
+                             "Non‐Communicable and Cancer Epidemiology Group (ibs.Granada)",br(),
+                              "University of Granada."),
                           h4("Andalusian School of Public Health"),
                           tags$i(h5("daniel.redondo.easp at juntadeandalucia.es")))
                           ),
@@ -200,9 +205,9 @@ ui <- fluidPage(theme=shinytheme("cosmo"),
                  
                  fluidRow(column(2,img(src="logo_MS.png",width="100px")),
                           column(10,h4(tags$b("Michael Schomaker")),
-                                 h4("The University of Cape Town, School of Public Health and Family Medicine,
-                                    Center for Infectious Disease Epidemiology and Research. Cape Town, South Africa"),
-                                 br(),
+                                 h4("School of Public Health and Family Medicine",br(),
+                                    "Center for Infectious Disease Epidemiology and Research",br(),
+                                    "University of Cape Town, Cape Town, South Africa"),
                                  tags$i(h5("michael.schomaker at uct.ac.za")))
                  ),
                  
@@ -235,8 +240,6 @@ output$formulaC<-renderUI({
     if(input$modelC==TRUE)  withMathJax("$$\\text{SBP} = \\beta_{0} + \\beta_{1} \\text{AGE} + \\beta_{2} \\text{SOD} + \\beta_{3} \\text{PRO}$$")
 })
 
-
-
 #Data generation
 ObsData <- reactive({set.seed(777)
                      generateData(input$beta1,input$beta2,n=1000)})
@@ -249,19 +252,19 @@ fit1 <- reactive({lm(sbp ~ age, data = ObsData())})
 fit2 <- reactive({lm(sbp ~ age + sodium, data = ObsData())})
 fit3 <- reactive({lm(sbp ~ age + proteinurie + sodium, data = ObsData())})
 
-grafico1 <- reactive({visreg(fit1(), points=list(cex = 1.5, pch = 1), jitter = 10, bty = "n")})
-grafico2 <- reactive({visreg(fit2(), points=list(cex = 1.5, pch = 1), jitter = 10, bty = "n")})
-grafico3 <- reactive({visreg(fit3(), points=list(cex = 1.5, pch = 1), jitter = 10, bty = "n")})
+grafico1 <- reactive({visreg(fit1(), points = list(cex = 1.5, pch = 1), jitter = 10, bty = "n")})
+grafico2 <- reactive({visreg(fit2(), points = list(cex = 1.5, pch = 1), jitter = 10, bty = "n")})
+grafico3 <- reactive({visreg(fit3(), points = list(cex = 1.5, pch = 1), jitter = 10, bty = "n")})
 
 # Figures
 output$gA1<-renderPlot({
-  if(input$modelA==TRUE) plot(grafico1(),gg=TRUE,ylab="SBP (mmHg)",xlab="Age (years)",
+  if(input$modelA==TRUE) plot(grafico1(), gg = TRUE, ylab = "SBP (mmHg)", xlab = "Age (years)",
                               points=list(size = 2, pch = 1, alpha = 0.4,col = "snow3"), line=list(col = "blue",size = 1.3)) + theme_classic()
 })
 
 output$gB1<-renderPlot({
-  if(input$modelB==TRUE) plot(grafico2()[[1]],gg=TRUE,ylab="SBP (mmHg)",xlab="Age (years)",
-                              points=list(size=2, pch=1,alpha=0.4,col="snow3"), line=list(col="blue",size=1.3)) + theme_classic()
+  if(input$modelB==TRUE) plot(grafico2()[[1]],gg = TRUE, ylab=  "SBP (mmHg)",xlab="Age (years)",
+                              points = list(size = 2, pch = 1, alpha = 0.4, col = "snow3"), line=list(col = "blue",size=1.3)) + theme_classic()
 })
 
 # Positive slope -> blue; negative -> red
