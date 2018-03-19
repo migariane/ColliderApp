@@ -267,11 +267,11 @@ output$gB1<-renderPlot({
 # Positive slope -> blue; negative -> red
 output$gC1<-renderPlot({
         if(input$modelC==TRUE)
-          if(fit3()$coefficients["age"]>0) plot(grafico3()[[1]],gg=TRUE,ylab="SBP (mmHg)",xlab="Age (years)",
-                                                points=list(size=2, pch=1,alpha=0.4,col="snow3"), line=list(col="blue",size=1.3)) + theme_classic()
+          if(fit3()$coefficients["age"]>0) plot(grafico3()[[1]], gg = TRUE, ylab = "SBP (mmHg)", xlab = "Age (years)",
+                                                points = list(size = 2, pch = 1, alpha = 0.4, col = "snow3"), line = list(col = "blue",size=1.3)) + theme_classic()
           else 
-            plot(grafico3()[[1]],gg=TRUE,ylab="SBP (mmHg)",xlab="Age (years)",
-                 points=list(size=2, pch=1,alpha=0.4,col="snow3"), line=list(col="red",size=1.3)) + theme_classic()
+            plot(grafico3()[[1]], gg = TRUE, ylab = "SBP (mmHg)", xlab = "Age (years)",
+                 points = list(size = 2, pch = 1, alpha = 0.4, col = "snow3"), line = list(col = "red", size = 1.3)) + theme_classic()
 })
 
 # Coefficients
@@ -295,12 +295,12 @@ output$data.generation.plot1 <- renderPlot({
 
 output$data.generation.plot2 <- renderPlot({
   plot(grafico3()[[2]],gg = TRUE,ylab = "SBP (mmHg)", xlab = "Proteinurie (mg)",
-       points=list(size = 2, pch = 1,alpha = 0.4, col = "snow3"), line = list(col = "darkmagenta", size = 1.3))+ theme_classic()
+       points=list(size = 2, pch = 1,alpha = 0.4, col = "snow3"), line = list(col = "darkmagenta", size = 1.3)) + theme_classic()
 })
 
 output$data.generation.plot3 <- renderPlot({
   plot(grafico3()[[3]], gg = TRUE, ylab ="SBP (mmHg)",xlab = "Sodium (g)",
-       points=list(size = 2, pch = 1, alpha = 0.4,col = "snow3"), line=list(col = "darkmagenta", size = 1.3))+ theme_classic()
+       points=list(size = 2, pch = 1, alpha = 0.4,col = "snow3"), line=list(col = "darkmagenta", size = 1.3)) + theme_classic()
 })
 
 # Download data
