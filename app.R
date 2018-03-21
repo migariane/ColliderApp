@@ -3,7 +3,7 @@ library(shinythemes)
 library(ggplot2)
 library(dplyr)
 library(readr) # For write_csv
-library(visreg) # Model visualization.
+library(visreg) # Model visualization
 
 generateData <- function(alpha1, alpha2, n){
     age <- rnorm(n, 65, 5)
