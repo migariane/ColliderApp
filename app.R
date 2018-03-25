@@ -168,7 +168,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
         tabPanel("Credits & Acknowledgment",
                  
                  # Authorship
-                 h2("Autorship"), br(),
+                 h2("Authorship"), br(),
                  fluidRow(column(2, img(src = "logo_MALF.png", width = "100px")),
                           column(10, h4(tags$b("Miguel Angel Luque-Fernandez")),
                                      h4("Biomedical Research Institute of Granada", br(),
