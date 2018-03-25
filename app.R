@@ -2,7 +2,7 @@ library(shiny)
 library(shinythemes)
 library(ggplot2)
 library(dplyr)
-library(readr) # For write_csv
+library(readr) # For "write_csv" function
 library(visreg) # Model visualization
 
 generateData <- function(alpha1, alpha2, n){
