@@ -9,8 +9,8 @@ generateData <- function(alpha1, alpha2, n){
     age <- rnorm(n, 65, 5)
     sodium  <- age / 15 + rnorm(n) 
     sbp <- 10 * sodium + 1.25 * age + rnorm(n)
-    proteinurie  <-  alpha1 * sbp + alpha2 * age - 0.9 * sodium + rnorm(n)
-    data.frame(sbp, age, sodium, proteinurie)
+    proteinuria  <-  alpha1 * sbp + alpha2 * age - 0.9 * sodium + rnorm(n)
+    data.frame(sbp, age, sodium, proteinuria)
 }
 
 # UI -------------------------------
@@ -60,7 +60,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
      
      # Legend
      wellPanel(tags$b("Legend:"), br(),
-               "PRO = Proteinurie (mg)", br(),
+               "PRO = proteinuria (mg)", br(),
                "AGE = Age (years)", br(),
                "SOD = Sodium intake (g)", br(),
                "SBP = Systolic Blood Pressure (mmHg)")
@@ -136,8 +136,8 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                         "age <- rnorm(n, 65, 5)", br(),
                         "sodium  <- age / 15 + rnorm(n) ", br(),
                         "sbp <- 10 * sodium + 1.25 * age + rnorm(n)", br(),
-                        "proteinurie  <-  alpha1 * sbp + alpha2 * age - 0.9 * sodium + rnorm(n)", br(),
-                        "data.frame(sbp, age, sodium, proteinurie)", br(),
+                        "proteinuria  <-  alpha1 * sbp + alpha2 * age - 0.9 * sodium + rnorm(n)", br(),
+                        "data.frame(sbp, age, sodium, proteinuria)", br(),
                         "}", br(), br(),
                         "set.seed = 777", br(), br(),
                         "head(generateData(1000))", br(),
@@ -246,7 +246,7 @@ server <- function(input, output) {
     # Linear models fits + graphs
     fit1 <- reactive({lm(sbp ~ age, data = ObsData())})
     fit2 <- reactive({lm(sbp ~ age + sodium, data = ObsData())})
-    fit3 <- reactive({lm(sbp ~ age + proteinurie + sodium, data = ObsData())})
+    fit3 <- reactive({lm(sbp ~ age + proteinuria + sodium, data = ObsData())})
     
     grafico1 <- reactive({visreg(fit1(), points = list(cex = 1.5, pch = 1), jitter = 10, bty = "n")})
     grafico2 <- reactive({visreg(fit2(), points = list(cex = 1.5, pch = 1), jitter = 10, bty = "n")})
@@ -293,7 +293,7 @@ server <- function(input, output) {
     })
     
     output$plot_pro <- renderPlot({
-      plot(grafico3()[[2]], gg = TRUE, ylab = "SBP (mmHg)", xlab = "Proteinurie (mg)",
+      plot(grafico3()[[2]], gg = TRUE, ylab = "SBP (mmHg)", xlab = "proteinuria (mg)",
            points=list(size = 2, pch = 1, alpha = 0.4, col = "snow3"), line = list(col = "darkmagenta", size = 1.3)) + theme_classic()
     })
     
