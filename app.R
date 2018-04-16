@@ -16,96 +16,128 @@ generateData <- function(alpha1, alpha2, n){
 # UI -------------------------------
 ui <- fluidPage(theme = shinytheme("cosmo"),
       titlePanel(HTML("<b>Collider</b>: a Shiny app"), windowTitle = "Collider"),
-      sidebarLayout(
-      sidebarPanel(width = 3,
-
-      # Model Selection
-      h3("Model selection:"),
-      checkboxInput(inputId = "modelA", 
-                    label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}$$")), style = "margin-top:-10px"),
-                    value = TRUE
-                    ),
-      
-      checkboxInput(inputId = "modelB", 
-                    label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}+\\beta_{2}\\text{SOD}$$")), style = "margin-top:-10px"),
-                    value = TRUE
-                    ),
-      
-      checkboxInput(inputId = "modelC", 
-                    label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}+\\beta_{2}\\text{SOD}+\\beta_{3}\\text{PRO}$$")), style = "margin-top:-10px"),
-                    value = TRUE
-                    ),
-      
-      hr(), 
-      
-      # Slider for coefficients
-      h5(withMathJax("Collider Model: $$\\text{PRO}=\\alpha_{0}+\\alpha_{1}\\text{AGE}+\\alpha_{2}\\text{SBP}+\\alpha_{3}\\text{SOD}$$")),
-      h6("Move the input slider to visualize the collider"),
-      
-      sliderInput(inputId = "beta1", 
-                  label = h5(withMathJax("$$\\alpha_1\\text{(Effect of SBP on PRO)}$$")),
-                  min = 0.5,
-                  max = 5,
-                  step = 0.05,
-                  value = 1.2
-                  ),
-     
-      sliderInput(inputId = "beta2", 
-                  label = h5(withMathJax("$$\\alpha_2\\text{(Effect of AGE on PRO)} $$")),
-                  min = 0.5,
-                  max = 5,
-                  step = 0.05,
-                  value = 1.8
-                  ),
-     
-     # Legend
-     wellPanel(tags$b("Legend:"), br(),
-               "PRO = proteinuria (mg)", br(),
-               "AGE = Age (years)", br(),
-               "SOD = Sodium intake (g)", br(),
-               "SBP = Systolic Blood Pressure (mmHg)")
-               ),
-    
-    # Outputs: panel tabs
-    mainPanel(
       tabsetPanel(
         
         # Tab 1: Welcome -------------------------------
         tabPanel("Welcome", br(), br(),
-                 div(img(src = "logo.png", width ="450px"), style = "text-align:center;")
+                 div(img(src = "logo.png", width = "40%"), style = "text-align:center;")
                  ),
         
         # Tab 2: DAG -------------------------------
         tabPanel("DAGs",
                  h2("Directed Acyclic Graphs"), br(),
+                 sidebarLayout( 
+                     sidebarPanel(width = 3,
+                                  
+                                  # Model Selection
+                                  h3("Model selection:"),
+                                  checkboxInput(inputId = "modelA_dag", 
+                                                label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}$$")), style = "margin-top:-10px"),
+                                                value = TRUE
+                                  ),
+                                  
+                                  checkboxInput(inputId = "modelB_dag", 
+                                                label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}+\\beta_{2}\\text{SOD}$$")), style = "margin-top:-10px"),
+                                                value = TRUE
+                                  ),
+                                  
+                                  checkboxInput(inputId = "modelC_dag", 
+                                                label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}+\\beta_{2}\\text{SOD}+\\beta_{3}\\text{PRO}$$")), style = "margin-top:-10px"),
+                                                value = TRUE
+                                  ),
+                                  
+                                  # Legend
+                                  wellPanel(tags$b("Legend:"), br(),
+                                            "PRO = proteinuria (mg)", br(),
+                                            "AGE = Age (years)", br(),
+                                            "SOD = Sodium intake (g)", br(),
+                                            "SBP = Systolic Blood Pressure (mmHg)")
+                     ),
+                     
+                     # Outputs: panel tabs
+              mainPanel(
+                 
                  # No model
-                 conditionalPanel(condition = "input.modelA==false && input.modelB==false &&input.modelC==false",
+                 conditionalPanel(condition = "input.modelA_dag==false && input.modelB_dag==false &&input.modelC_dag==false",
                                   h3(tags$b("Please select a model")),
                                   hr()
                                   ),
                  # Model A
-                 conditionalPanel(condition = "input.modelA==true",
+                 conditionalPanel(condition = "input.modelA_dag==true",
                                   h4(withMathJax("$$\\text{Model 1: SBP} = \\beta_{0} + \\beta_{1} \\text{AGE}$$")),
                                   div(img(src = "dagA.png", width = "600px"), style = "text-align:center"),
                                   hr()
                                   ),
                  # Model B
-                 conditionalPanel(condition = "input.modelB==true",
+                 conditionalPanel(condition = "input.modelB_dag==true",
                                   h4(withMathJax("$$\\text{Model 2: SBP} = \\beta_{0} + \\beta_{1} \\text{AGE} + \\beta_{2} \\text{SOD}$$")),
                                   div(img(src = "dagB.png", width = "600px"), style = "text-align:center"),
                                   hr()
                                   ),
                  # Model C
-                 conditionalPanel(condition = "input.modelC==true",
+                 conditionalPanel(condition = "input.modelC_dag==true",
                                   h4(withMathJax("$$\\text{Model 3: SBP} = \\beta_{0} + \\beta_{1}  \\text{AGE} + \\beta_{2} \\text{SOD} + \\beta_{3} \\text{PRO}$$")),
                                   div(img(src = "dagC.png", width = "600px"), style = "text-align:center"),
                                   hr()
                                   )
-                 ),
+                 ))),
                  
         # Tab 3: Graphs -------------------------------
         tabPanel("Collider Visualization",
                  h3("Effect of Age on SPB for different models' specifications. Model 3 = collider model"), br(),
+                 
+                 sidebarLayout(
+                     sidebarPanel(width = 3,
+                                  
+                                  # Model Selection
+                                  h3("Model selection:"),
+                                  checkboxInput(inputId = "modelA", 
+                                                label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}$$")), style = "margin-top:-10px"),
+                                                value = TRUE
+                                  ),
+                                  
+                                  checkboxInput(inputId = "modelB", 
+                                                label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}+\\beta_{2}\\text{SOD}$$")), style = "margin-top:-10px"),
+                                                value = TRUE
+                                  ),
+                                  
+                                  checkboxInput(inputId = "modelC", 
+                                                label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}+\\beta_{2}\\text{SOD}+\\beta_{3}\\text{PRO}$$")), style = "margin-top:-10px"),
+                                                value = TRUE
+                                  ),
+                                  
+                                  hr(), 
+                                  
+                                  # Slider for coefficients
+                                  h5(withMathJax("Collider Model: $$\\text{PRO}=\\alpha_{0}+\\alpha_{1}\\text{AGE}+\\alpha_{2}\\text{SBP}+\\alpha_{3}\\text{SOD}$$")),
+                                  h6("Move the input slider to visualize the collider"),
+                                  
+                                  sliderInput(inputId = "beta1", 
+                                              label = h5(withMathJax("$$\\alpha_1\\text{(Effect of SBP on PRO)}$$")),
+                                              min = 0.5,
+                                              max = 5,
+                                              step = 0.05,
+                                              value = 0.5
+                                  ),
+                                  
+                                  sliderInput(inputId = "beta2", 
+                                              label = h5(withMathJax("$$\\alpha_2\\text{(Effect of AGE on PRO)} $$")),
+                                              min = 0.5,
+                                              max = 5,
+                                              step = 0.05,
+                                              value = 0.85
+                                  ),
+                                  
+                                  # Legend
+                                  wellPanel(tags$b("Legend:"), br(),
+                                            "PRO = proteinuria (mg)", br(),
+                                            "AGE = Age (years)", br(),
+                                            "SOD = Sodium intake (g)", br(),
+                                            "SBP = Systolic Blood Pressure (mmHg)")
+                     ),
+                     
+                     # Outputs: panel tabs
+                     mainPanel(
                  # No model
                  conditionalPanel(condition = "input.modelA==false && input.modelB==false && input.modelC==false",
                                   h3(tags$b("Please select a model")),
@@ -125,39 +157,50 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                           column(4, h5(uiOutput("coefficient_3")))
                  ),
                  hr()
-        ),
+        ))),
         
         # Tab 4: Code for data generation -------------------------------
         tabPanel("Data generation",
                  h2("Code for data generation"), br(),
-                 
-                 # Code
-                 tags$p("generateData <- function(alpha1, alpha2, n){", br(),
-                        "age <- rnorm(n, 65, 5)", br(),
-                        "sodium  <- age / 15 + rnorm(n) ", br(),
-                        "sbp <- 10 * sodium + 1.25 * age + rnorm(n)", br(),
-                        "proteinuria  <-  alpha1 * sbp + alpha2 * age - 0.9 * sodium + rnorm(n)", br(),
-                        "data.frame(sbp, age, sodium, proteinuria)", br(),
-                        "}", br(), br(),
-                        "set.seed = 777", br(), br(),
-                        "head(generateData(1000))", br(),
-                        tableOutput("table_generateData"),
-                        style = "font-family: 'Courier New'"
-                        ),
-                 
-                 downloadButton(outputId = "download_data", label = tags$b("Download 1.000 simulations (.csv)")),
-                 
-                 hr(),
-                 
-                 # Distribution graphs
-                 h3(withMathJax("$$\\text{SBP} = \\beta_{0} + \\beta_{1} \\text{AGE} + \\beta_{2} \\text{PRO} + \\beta_{3} \\text{SOD}$$")),
-                
-                 fluidRow(column(4, plotOutput("plot_age"), style = 'padding:0px;'),
-                          column(4, plotOutput("plot_pro"), style = 'padding:0px;'),
-                          column(4, plotOutput("plot_sod"), style = 'padding:0px;')
-                          ),
-                 hr()
-                 ),
+                 sidebarLayout(
+                     sidebarPanel(width = 3,
+                                  # Legend
+                                  tags$b("Legend:"), br(),
+                                            "PRO = proteinuria (mg)", br(),
+                                            "AGE = Age (years)", br(),
+                                            "SOD = Sodium intake (g)", br(),
+                                            "SBP = Systolic Blood Pressure (mmHg)"
+                     ),
+                     
+                     # Outputs: panel tabs
+                     mainPanel(
+                         # Code
+                         tags$p("generateData <- function(alpha1, alpha2, n){", br(),
+                                "  age <- rnorm(n, 65, 5)", br(),
+                                "sodium  <- age / 15 + rnorm(n) ", br(),
+                                "sbp <- 10 * sodium + 1.25 * age + rnorm(n)", br(),
+                                "proteinuria  <-  alpha1 * sbp + alpha2 * age - 0.9 * sodium + rnorm(n)", br(),
+                                "data.frame(sbp, age, sodium, proteinuria)", br(),
+                                "}", br(), br(),
+                                "set.seed = 777", br(), br(),
+                                "head(generateData(1000))", br(),
+                                tableOutput("table_generateData"),
+                                style = "font-family: 'Courier New'"
+                                ),
+                         
+                         downloadButton(outputId = "download_data", label = tags$b("Download 1.000 simulations (.csv)")),
+                         
+                         hr(),
+                         
+                         # Distribution graphs
+                         h3(withMathJax("$$\\text{SBP} = \\beta_{0} + \\beta_{1} \\text{AGE} + \\beta_{2} \\text{PRO} + \\beta_{3} \\text{SOD}$$")),
+                        
+                         fluidRow(column(4, plotOutput("plot_age"), style = 'padding:0px;'),
+                                  column(4, plotOutput("plot_pro"), style = 'padding:0px;'),
+                                  column(4, plotOutput("plot_sod"), style = 'padding:0px;')
+                                  ),
+                         hr()
+                         ))),
         
         # Tab 5: Article -------------------------------
         tabPanel("Article", br(), br(),
@@ -170,41 +213,88 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                  # Authorship
                  h2("Authorship"), br(),
                  fluidRow(column(2, img(src = "logo_MALF.png", width = "100px")),
-                          column(10, h4(tags$b("Miguel Angel Luque-Fernandez")),
-                                     h4("Biomedical Research Institute of Granada", br(),
-                                        "Non‐Communicable and Cancer Epidemiology Group (ibs.Granada)", br(),
-                                        "University of Granada."),
-                                     h4("Andalusian School of Public Health"),     
-                                     h4("London School of Hygiene & Tropical Medicine"),
-                                     tags$i(h5("miguel.luque.easp at juntadeandalucia.es"))
-                                     )
-                          ),
+                          column(10, h4(tags$b("Miguel Angel Luque-Fernandez (PI)")),
+                                 h4("Scientific Researcher in Epidemiology and Biostatistics", br(),
+                                    "Biomedical Research Institute of Granada", br(),
+                                    "Non‐Communicable and Cancer Epidemiology Group (ibs.Granada)", br(),
+                                    "University of Granada", br(),
+                                    "Honorary Assistant Professor of Epidemiology", br(),
+                                    "London School of Hygiene & Tropical Medicine"),
+                                 
+                                 tags$i(h5("miguel.luque.easp at juntadeandalucia.es"))
+                          )
+                 ),
                  
                  hr(),
                  
                  fluidRow(column(2, img(src = "logo_DRS.png", width = "100px")),
                           column(10, h4(tags$b("Daniel Redondo Sánchez")),
-                                     h4("Biomedical Research Institute of Granada", br(),
-                                        "Non‐Communicable and Cancer Epidemiology Group (ibs.Granada)", br(),
-                                        "University of Granada."),
-                                     h4("Andalusian School of Public Health"),
-                                     tags$i(h5("daniel.redondo.easp at juntadeandalucia.es"))
-                                 )
-                          ),
+                                 h4("Research Assitant", br(),
+                                    "Biomedical Research Institute of Granada", br(),
+                                    "Non‐Communicable and Cancer Epidemiology Group (ibs.Granada)", br(),
+                                    "University of Granada", br(),
+                                    "Andalusian School of Public Health"),
+                                 
+                                 tags$i(h5("daniel.redondo.easp at juntadeandalucia.es"))
+                          )
+                 ),
+                 
+                 hr(),
+                 
+                 fluidRow(column(2, img(src = "MJsanchez.png", width = "100px")),
+                          column(10, h4(tags$b("Maria Jose Sánchez Perez")),
+                                 h4("Subdirector Biomedical Research Institute of Granada", br(),
+                                    "Director Non‐Communicable and Cancer Epidemiology Group (ibs.Granada)", br(),
+                                    "University of Granada", br(),
+                                    "CIBER of Epidemiology and Public Health (CIBERESP)", br(),
+                                    "Andalusian School of Public Health"),
+                                 
+                                 tags$i(h5("mariajose.sanchez at juntadeandalucia.es"))
+                          )
+                 ),
+                 
+                 hr(),
+                 
+                 fluidRow(column(2, img(src = "Anand.jpg", width = "100px")),
+                          column(10, h4(tags$b("Anand Vaidya")),
+                                 h4("Assitant Professor of Medicine", br(),
+                                    "Harvard Medical School, Harvard University", br(),
+                                    "Director of the Center for Adrenal Disorders (Diabetes, Hypertension", br(),
+                                    "Brigham and Women's Hospital (Endocrinology), Boston, USA"),
+                                
+                                  tags$i(h5("anandvaidya at bwh.harvard.edu"))
+                          )
+                 ),
+                 
+                 hr(),
+                 
+                 fluidRow(column(2, img(src = "MSchnitzer.png", width = "100px")),
+                          column(10, h4(tags$b("Mireille Schnitzer")),
+                                 h4("Assistant Professor of Biostatistics", br(),
+                                    "Faculty of Pharmacy", br(),
+                                    "Univeristy of Montreal, Canada", br(),
+                                    "Adjunt Professor of Biostatistics", br(),
+                                    "Department Epidemiology, Biostatistics and Occupational Health", br(),
+                                    "McGill University, Canada"),
+                                 
+                                 tags$i(h5("mireille.schnitzer at umontreal.ca"))
+                          )
+                 ),
                  
                  hr(),
                  
                  fluidRow(column(2, img(src = "logo_MS.png", width = "100px")),
                           column(10, h4(tags$b("Michael Schomaker")),
-                                     h4("School of Public Health and Family Medicine", br(),
-                                        "Center for Infectious Disease Epidemiology and Research", br(),
-                                        "University of Cape Town, Cape Town, South Africa"),
-                                     tags$i(h5("michael.schomaker at uct.ac.za"))
-                                 )
+                                 h4("Senior Statistician IeDEA HIV-Cohort", br(),
+                                    "School of Public Health and Family Medicine", br(),
+                                    "Center for Infectious Disease Epidemiology and Research", br(),
+                                    "University of Cape Town, Cape Town, South Africa"),
+                                 
+                                 tags$i(h5("michael.schomaker at uct.ac.za"))
+                          )
                  ),
                  
                  hr(),
-                 
                  # Acknowledgment
                  h2("Acknowledgment"),
                  tags$b("Funding information"), br(),
@@ -215,8 +305,6 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                  )
                   
         ) # End tabsetpanel
-      ) # End mainpanel
-    ) # End sidebarlayout
 ) # End UI
 
 
