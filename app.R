@@ -241,7 +241,11 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                  
                  hr(),
                  
+<<<<<<< HEAD
                  fluidRow(column(2, img(src = "MJSanchez.png", width = "100px")),
+=======
+                 fluidRow(column(2, img(src = "MJsanchez.png", width = "100px")),
+>>>>>>> 4327480d0b6874cb064eab68bccce613884637c2
                           column(10, h4(tags$b("Maria Jose Sánchez Perez")),
                                  h4("Subdirector Biomedical Research Institute of Granada", br(),
                                     "Director Non‐Communicable and Cancer Epidemiology Group (ibs.Granada)", br(),
