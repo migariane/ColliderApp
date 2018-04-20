@@ -6,114 +6,120 @@ library(readr) # For "write_csv" function
 library(visreg) # Model visualization
 
 generateData <- function(alpha1, alpha2, n){
-    age <- rnorm(n, 65, 5)
-    sodium  <- age / 15 + rnorm(n) 
-    sbp <- 10 * sodium + 1.25 * age + rnorm(n)
-    proteinuria  <-  alpha1 * sbp + alpha2 * age - 0.9 * sodium + rnorm(n)
+    sodium  <- rnorm(n, 3.50, 0.50) 
+    age <- sodium * 18 + rnorm(n)
+    sbp <- 2.25 * sodium + 2.00 * age + rnorm(n)
+    proteinuria  <-  alpha1 * sodium + alpha2 * sbp + 0.9 * age + rnorm(n)
     data.frame(sbp, age, sodium, proteinuria)
 }
 
+
 # UI -------------------------------
 ui <- fluidPage(theme = shinytheme("cosmo"),
-      titlePanel(HTML("<b>Collider</b>: a Shiny app"), windowTitle = "Collider"),
+      titlePanel(HTML("<b>Colliders in Epidemiology: an educational interactive web application</b>"), windowTitle = "Collider"),
       tabsetPanel(
+        # Tab 1: Motivation -------------------------------
+        tabPanel("Motivation", br(), br(),
+                 fluidRow(
+                     column(5, div(img(src = "logo.png", width = "80%"), style = "text-align: center;")),
+                     column(7,
+                            h3(tags$b("Correlation is not causation")),
+                            
+                            h4("During the last 30 years, classical epidemiology has focussed on the control of confounding [1]. However, it
+                               is only recently that epidemiologists have started to focus on the bias produced by colliders and mediators
+                               in addition to confounders [2, 3]. In the epidemiological literature different explanations have been
+                               proposed to describe the paradoxical protective effect of established risk factors. Such as, for example,
+                               the protective effect of maternal smoking on infant mortality and the incidence of pre-eclampsia, namely
+                               the birth weight and the smoking pre-eclampsia paradoxes [4, 5].", style = "text-align: justify;"),
+                            
+                            hr(),
+                            
+                            h3(tags$b("What is a collider?")),
+                            
+                            h4("A collider for a certain pair of variables such as an outcome as exposure is a third variable that
+                               is influenced by both of them. Controlling for, or conditioning the analysis on (i.e., stratiffication or
+                               regression) a collider, can introduce a spurious association between its causes (exposure and outcome)
+                               potentially explaining why the medical literature is full of paradoxical findings [6]. In DAG terminology,
+                               a collider is the variable in the middle of an inverted fork (i.e., variable Z in A -> Z <- Y) [7]. While this methodological
+                               note will not close the vexing gap between correlation and causation, but
+                               it will contribute to the increasing awareness and the general understanding of colliders among applied
+                               epidemiologists and medical researchers.", style = "text-align: justify;"),
+                            
+                            hr(),
+                            
+                            h3(tags$b("Objective")),
+                            
+                            h4("To illustrate with an educational purpose the effect of conditioning on a collider based on a realistic non-communicable disease
+                                epidemiology example (hypertension and dietary sodium intake).
+                                We estimate the effect of 24-hour dietary sodium intake in grams on systolic blood pressure (SBP)
+                                accounting for the effect of age. The objective of the illustration is to show the paradoxical effect of
+                                24-hour dietary sodium intake on SBP after conditioning on a collider (24-hour excretion of urinary protein).
+                               ", style = "text-align: justify;"),
+                            
+                            hr(),
+
+                            h3(tags$b("References")),
+                            
+                            h5("[1] Sander Greenland and Hal Morgenstern. Confounding in health research. Annual Review of Public Health, 22(1):189-212, May 2001.",
+                               br(), br(),
+                               "[2] Stephen R Cole, RobertWPlatt, Enrique F Schisterman, Haitao Chu, DanielWestreich, David Richardson, and Charles
+                                Poole. Illustrating bias due to conditioning on a collider. International Journal of Epidemiology, 39(2):417-420, Nov 2009.",
+                               br(), br(),
+                               "[3] Tyler J. Vanderweele and Stijn Vansteelandt. Conceptual issues concerning mediation, interventions and composition.
+                                    Statistics and Its Interface, 2(4):457-468, 2009.",
+                               br(), br(),
+                               "[4] Miguel Angel Luque-Fernandez, Helga Zoega, Unnur Valdimarsdottir, and Michelle A. Williams. Deconstructing the
+                                        smoking-preeclampsia paradox through a counterfactual framework. European Journal of Epidemiology, 31(6):613-623, Jun 2016.",
+                               br(), br(),
+                               "[5] S. Hernandez-Diaz, E. F. Schisterman, and M. A. Hernan. The birth weight ''paradox'' uncovered? American Journal
+                                            of Epidemiology, 164(11):1115-1120, Sep 2006.",
+                               br(), br(),
+                               "[6] Julia M Rohrer. Thinking clearly about correlations and causation: Graphical causal models for observational data. 2017.",
+                               br(), br(),
+                               "[7] Judea Pearl. Causal diagrams for empirical research. Biometrika, 82(4):669-688, 1995.",
+                               style = "text-align: justify;")
+                     )
+                )
+            ),
         
-        # Tab 1: Welcome -------------------------------
-        tabPanel("Welcome", br(), br(),
-                 div(img(src = "logo.png", width = "40%"), style = "text-align:center;")
-                 ),
-        
-        # Tab 2: DAG -------------------------------
-        tabPanel("DAGs",
-                 h2("Directed Acyclic Graphs"), br(),
-                 sidebarLayout( 
-                     sidebarPanel(width = 3,
-                                  
-                                  # Model Selection
-                                  h3("Model selection:"),
-                                  checkboxInput(inputId = "modelA_dag", 
-                                                label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}$$")), style = "margin-top:-10px"),
-                                                value = TRUE
-                                  ),
-                                  
-                                  checkboxInput(inputId = "modelB_dag", 
-                                                label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}+\\beta_{2}\\text{SOD}$$")), style = "margin-top:-10px"),
-                                                value = TRUE
-                                  ),
-                                  
-                                  checkboxInput(inputId = "modelC_dag", 
-                                                label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}+\\beta_{2}\\text{SOD}+\\beta_{3}\\text{PRO}$$")), style = "margin-top:-10px"),
-                                                value = TRUE
-                                  ),
-                                  
-                                  # Legend
-                                  wellPanel(tags$b("Legend:"), br(),
-                                            "PRO = proteinuria (mg)", br(),
-                                            "AGE = Age (years)", br(),
-                                            "SOD = Sodium intake (g)", br(),
-                                            "SBP = Systolic Blood Pressure (mmHg)")
-                     ),
-                     
-                     # Outputs: panel tabs
-              mainPanel(
-                 
-                 # No model
-                 conditionalPanel(condition = "input.modelA_dag==false && input.modelB_dag==false &&input.modelC_dag==false",
-                                  h3(tags$b("Please select a model")),
-                                  hr()
-                                  ),
-                 # Model A
-                 conditionalPanel(condition = "input.modelA_dag==true",
-                                  h4(withMathJax("$$\\text{Model 1: SBP} = \\beta_{0} + \\beta_{1} \\text{AGE}$$")),
-                                  div(img(src = "dagA.png", width = "600px"), style = "text-align:center"),
-                                  hr()
-                                  ),
-                 # Model B
-                 conditionalPanel(condition = "input.modelB_dag==true",
-                                  h4(withMathJax("$$\\text{Model 2: SBP} = \\beta_{0} + \\beta_{1} \\text{AGE} + \\beta_{2} \\text{SOD}$$")),
-                                  div(img(src = "dagB.png", width = "600px"), style = "text-align:center"),
-                                  hr()
-                                  ),
-                 # Model C
-                 conditionalPanel(condition = "input.modelC_dag==true",
-                                  h4(withMathJax("$$\\text{Model 3: SBP} = \\beta_{0} + \\beta_{1}  \\text{AGE} + \\beta_{2} \\text{SOD} + \\beta_{3} \\text{PRO}$$")),
-                                  div(img(src = "dagC.png", width = "600px"), style = "text-align:center"),
-                                  hr()
-                                  )
-                 ))),
-                 
-        # Tab 3: Graphs -------------------------------
+        # Tab 2: Collider Visualization -------------------------------
         tabPanel("Collider Visualization",
-                 h3("Effect of Age on SPB for different models' specifications. Model 3 = collider model"), br(),
+                 h2(tags$b("Effect of dietary sodium intake on systolic blood pressure for different models' specifications.")), br(),
                  
                  sidebarLayout(
                      sidebarPanel(width = 3,
+                                  # Legend
+                                  wellPanel(tags$b("Legend:"), br(),
+                                            "AGE = Age (years)", br(),
+                                            "SOD = 24-hour dietary sodium intake (g)", br(),
+                                            "PRO = 24-hour excretion of urinary protein (proteinuria) (mg)", br(),
+                                            "SBP = Systolic blood pressure (mmHg)"),
                                   
                                   # Model Selection
-                                  h3("Model selection:"),
+                                  h3("Select the model(s) to visualize the effect of SOD in SBP:"),
                                   checkboxInput(inputId = "modelA", 
-                                                label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}$$")), style = "margin-top:-10px"),
+                                                label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{SOD}$$")), style = "margin-top:-10px"),
                                                 value = TRUE
                                   ),
                                   
                                   checkboxInput(inputId = "modelB", 
-                                                label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}+\\beta_{2}\\text{SOD}$$")), style = "margin-top:-10px"),
+                                                label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{SOD}+\\beta_{2}\\text{AGE}$$")), style = "margin-top:-10px"),
                                                 value = TRUE
                                   ),
                                   
                                   checkboxInput(inputId = "modelC", 
-                                                label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{AGE}+\\beta_{2}\\text{SOD}+\\beta_{3}\\text{PRO}$$")), style = "margin-top:-10px"),
+                                                label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{SOD}+\\beta_{2}\\text{AGE}+\\beta_{3}\\text{PRO}$$")), style = "margin-top:-10px"),
                                                 value = TRUE
                                   ),
                                   
                                   hr(), 
                                   
                                   # Slider for coefficients
-                                  h5(withMathJax("Collider Model: $$\\text{PRO}=\\alpha_{0}+\\alpha_{1}\\text{AGE}+\\alpha_{2}\\text{SBP}+\\alpha_{3}\\text{SOD}$$")),
-                                  h6("Move the input slider to visualize the collider"),
+                                  h5(withMathJax("Collider Model: $$\\text{PRO}=\\alpha_{0}+\\alpha_{1}\\text{SOD}+\\alpha_{2}\\text{SBP}+ 0.9 \\times \\text{AGE}$$")),
+                                  h6("Move the input slider to visualize the collider effect"),
                                   
                                   sliderInput(inputId = "beta1", 
-                                              label = h5(withMathJax("$$\\alpha_1\\text{(Effect of SBP on PRO)}$$")),
+                                              label = h5(withMathJax("$$\\alpha_1\\text{(Effect of SOD on PRO)}$$")),
                                               min = 0.5,
                                               max = 5,
                                               step = 0.05,
@@ -121,19 +127,12 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                   ),
                                   
                                   sliderInput(inputId = "beta2", 
-                                              label = h5(withMathJax("$$\\alpha_2\\text{(Effect of AGE on PRO)} $$")),
+                                              label = h5(withMathJax("$$\\alpha_2\\text{(Effect of SBP on PRO)} $$")),
                                               min = 0.5,
                                               max = 5,
                                               step = 0.05,
-                                              value = 0.85
-                                  ),
-                                  
-                                  # Legend
-                                  wellPanel(tags$b("Legend:"), br(),
-                                            "PRO = proteinuria (mg)", br(),
-                                            "AGE = Age (years)", br(),
-                                            "SOD = Sodium intake (g)", br(),
-                                            "SBP = Systolic Blood Pressure (mmHg)")
+                                              value = 0.05
+                                  )
                      ),
                      
                      # Outputs: panel tabs
@@ -156,62 +155,109 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                           column(4, h5(uiOutput("coefficient_2"))),
                           column(4, h5(uiOutput("coefficient_3")))
                  ),
-                 hr()
-        ))),
+                 hr(),
+                 fluidRow(column(4, conditionalPanel(condition = "input.modelA == true", div(img(src = "graficoA.png", width = "100%"), style = "padding:0px; text-align:center"))),
+                          column(4, conditionalPanel(condition = "input.modelB == true", div(img(src = "graficoB.png", width = "80%"), style = "padding:0px; text-align:center"))),
+                          column(4, conditionalPanel(condition = "input.modelC == true", div(img(src = "graficoC.png", width = "100%"), style = "padding:0px; text-align:center")))
+                 )
+                 
+        ) #end mainpanel
         
-        # Tab 4: Code for data generation -------------------------------
+        )
+        ),
+        
+        # Tab 3: Code for data generation -------------------------------
         tabPanel("Data generation",
-                 h2("Code for data generation"), br(),
-                 sidebarLayout(
-                     sidebarPanel(width = 3,
-                                  # Legend
-                                  tags$b("Legend:"), br(),
-                                            "PRO = proteinuria (mg)", br(),
-                                            "AGE = Age (years)", br(),
-                                            "SOD = Sodium intake (g)", br(),
-                                            "SBP = Systolic Blood Pressure (mmHg)"
-                     ),
-                     
-                     # Outputs: panel tabs
-                     mainPanel(
-                         # Code
-                         tags$p("generateData <- function(alpha1, alpha2, n){", br(),
-                                "  age <- rnorm(n, 65, 5)", br(),
-                                "sodium  <- age / 15 + rnorm(n) ", br(),
-                                "sbp <- 10 * sodium + 1.25 * age + rnorm(n)", br(),
-                                "proteinuria  <-  alpha1 * sbp + alpha2 * age - 0.9 * sodium + rnorm(n)", br(),
-                                "data.frame(sbp, age, sodium, proteinuria)", br(),
-                                "}", br(), br(),
-                                "set.seed = 777", br(), br(),
-                                "head(generateData(1000))", br(),
+                 h2(tags$b("Data generation")), br(),
+                 fluidRow(column(6,
+                                 
+                                 h4(tags$b("Data generation process")),
+                                 p("Based on a motivating example in non-communicable disease epidemiology, we generated a dataset with
+                                   1,000 observations to contextualize the effect of conditioning on a collider. High blood pressure is one of the most common comorbidities.
+                                   Nearly 1 in 3 Americans suffer from high blood pressure and more than half do not have it under control
+                                   [1]. Sustained levels of systolic blood pressure over time are associated with increased cardio-vascular
+                                   morbidity and mortality [2]. Summative evidence shows that exceeding the recommendations for 24-
+                                   hour dietary sodium intake in grams is associated with increased levels of systolic blood pressure (SBP)
+                                   in mmHg [3]. SBP is associated with increasing age in years [4]. Thus, age is a confounder for the
+                                   association between sodium intake and SBP. However, high levels of 24-hour excretion of urinary protein
+                                   (proteinuria) are associated with sustained high SBP, advanced age and increased 24-hour dietary sodium
+                                   intake. Therefore, proteinuria acts as a collider"),
+                                 
+                                 p("The data generation for the simulation is based on the structural relationship between the variables depicted on the Directed Acyclic Graph.
+                                   We assumed that SBP increases with increasing age and dietary
+                                    sodium intake. We simulated 24-hour excretion of urinary protein as a function of age, SBP, and
+                                    sodium intake. We assured that the range of values of the simulated data was biologically plausible and as
+                                    close to reality as possible [4, 5]."),
+                                 
+                                 h4(tags$b("References")),
+                                 
+                                 h5("[1] Emelia J Benjamin, Michael J Blaha, Stephanie E Chiuve, Mary Cushman, Sandeep R Das, Rajat Deo,
+                                          J Floyd, M Fornage, C Gillespie, CR Isasi, et al. Heart disease and stroke statistics-2017 update: a report from
+                                          the american heart association. Circulation, 135(10):e146-e603, 2017.",
+                                    br(), br(),
+                                    "[2] Qiuping Gu, Vicki L Burt, Ryne Paulose-Ram, Sarah Yoon, and Richard F Gillum. High blood pressure and
+                                          cardio-vascular disease mortality risk among us adults: the third national health and nutrition examination
+                                          survey mortality follow-up study. Annals of epidemiology, 18(4):302-309, 2008.",
+                                    br(), br(),
+                                    "[3] Frank M Sacks, Laura P Svetkey, William M Vollmer, Lawrence J Appel, George A Bray, David Harsha,
+                                          Eva Obarzanek, Paul R Conlin, Edgar R Miller, Denise G Simons-Morton, et al. Effects on blood pressure of
+                                          reduced dietary sodium and the dietary approaches to stop hypertension (dash) diet. New England journal
+                                          of medicine, 344(1):3-10, 2001.",
+                                    br(), br(),
+                                    "[4] Linda Van Horn, Jo Ann S Carson, Lawrence J Appel, Lora E Burke, Christina Economos, Wahida Karmally et al.
+                                        Recommended dietary pattern to achieve adherence to the american
+                                    heart association/american college of cardiology (aha/acc) guidelines: A scientific statement from the american heart
+                                    association. Circulation, 134(22):e505{e529, Nov 2016.",
+                                    br(), br(),
+                                    "[5] Michael F Carroll. Proteinuria in adults: A diagnositc approach. American family physician, 62(6), 2000.",
+                                    style = "text-align: justify;"),
+                                 
+                                 # Code
+                                 h4(tags$b("Data generation code")),
+                                 tags$p("generateData <- function(n, seed){", style = "font-family: 'Courier New'"),
+                                 tags$p("set.seed(seed)", br(),
+                                        "Sodium_gr <- rnorm(n, 3.50, 0.50)", br(),
+                                        "Age_years <- Sodium_gr * 18 + rnorm(n)", br(),
+                                        "sbp_in_mmHg <- 2.25 * Sodium_gr + 2.00 * Age_years + rnorm(n)", br(),
+                                        "Proteinuria_in_mg <- 0.90 * Age_years + 1.80 * sbp_in_mmHg + 3.50 * Sodium_gr + rnorm(n)", br(),
+                                        "data.frame(sbp_in_mmHg, Sodium_gr, Age_years, Proteinuria_in_mg)",
+                                 style = "font-family: 'Courier New'; padding: 15px"),
+                                        
+                                        tags$p("}", style = "font-family: 'Courier New'"),
+                                 
+                                h4(tags$b("Data display and download")), br(),
+                                p("head(generateData(1000, 777))", style = "font-family: 'Courier New'"),
                                 tableOutput("table_generateData"),
-                                style = "font-family: 'Courier New'"
-                                ),
-                         
-                         downloadButton(outputId = "download_data", label = tags$b("Download 1.000 simulations (.csv)")),
-                         
-                         hr(),
-                         
-                         # Distribution graphs
-                         h3(withMathJax("$$\\text{SBP} = \\beta_{0} + \\beta_{1} \\text{AGE} + \\beta_{2} \\text{PRO} + \\beta_{3} \\text{SOD}$$")),
-                        
-                         fluidRow(column(4, plotOutput("plot_age"), style = 'padding:0px;'),
-                                  column(4, plotOutput("plot_pro"), style = 'padding:0px;'),
-                                  column(4, plotOutput("plot_sod"), style = 'padding:0px;')
-                                  ),
-                         hr()
-                         ))),
+                                 downloadButton(outputId = "download_data", label = tags$b("Download 1.000 simulations (.csv)"))
+                                 ),
+                          column(6,                             
+                                 # Legend
         
-        # Tab 5: Article -------------------------------
+                                 wellPanel(tags$b("Legend:"), br(),
+                                           "AGE = Age (years)", br(),
+                                           "SOD = 24-hour dietary sodium intake (g)", br(),
+                                           "PRO = 24-hour excretion of urinary protein (proteinuria) (mg)", br(),
+                                           "SBP = Systolic blood pressure (mmHg)",
+                                           br(), br(),
+                                           div(img(src = "graficoC.png", width = "75%"), style = "text-align:center"
+                                           )
+                                 )
+                          )
+                 ),
+                 
+                 hr()
+                 
+        ),
+
+        # Tab 4: Article -------------------------------
         tabPanel("Article", br(), br(),
-                 uiOutput("article"))
-        ,
-        
-        # Tab 6: Authorship & Acknowledgment -------------------------------
+                 uiOutput("article")),
+
+        # Tab 5: Authorship & Acknowledgment -------------------------------
         tabPanel("Credits & Acknowledgment",
                  
                  # Authorship
-                 h2("Authorship"), br(),
+                 h2(tags$b("Authorship")), br(),
                  fluidRow(column(2, img(src = "logo_MALF.png", width = "100px")),
                           column(10, h4(tags$b("Miguel Angel Luque-Fernandez (PI)")),
                                  h4("Scientific Researcher in Epidemiology and Biostatistics", br(),
@@ -241,11 +287,20 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                  
                  hr(),
                  
-<<<<<<< HEAD
+                 fluidRow(column(2, img(src = "logo_MS.png", width = "100px")),
+                          column(10, h4(tags$b("Michael Schomaker")),
+                                 h4("Senior Statistician IeDEA HIV-Cohort", br(),
+                                    "School of Public Health and Family Medicine", br(),
+                                    "Center for Infectious Disease Epidemiology and Research", br(),
+                                    "University of Cape Town, Cape Town, South Africa"),
+                                 
+                                 tags$i(h5("michael.schomaker at uct.ac.za"))
+                          )
+                 ),
+                 
+                 hr(),
+                 
                  fluidRow(column(2, img(src = "MJSanchez.png", width = "100px")),
-=======
-                 fluidRow(column(2, img(src = "MJsanchez.png", width = "100px")),
->>>>>>> 4327480d0b6874cb064eab68bccce613884637c2
                           column(10, h4(tags$b("Maria Jose Sánchez Perez")),
                                  h4("Subdirector Biomedical Research Institute of Granada", br(),
                                     "Director Non‐Communicable and Cancer Epidemiology Group (ibs.Granada)", br(),
@@ -273,34 +328,21 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                  hr(),
                  
                  fluidRow(column(2, img(src = "MSchnitzer.png", width = "100px")),
-                          column(10, h4(tags$b("Mireille Schnitzer")),
+                          column(10, h4(tags$b("Mireille E. Schnitzer")),
                                  h4("Assistant Professor of Biostatistics", br(),
                                     "Faculty of Pharmacy", br(),
-                                    "Univeristy of Montreal, Canada", br(),
+                                    "University of Montreal, Montreal, Canada", br(),
                                     "Adjunt Professor of Biostatistics", br(),
                                     "Department Epidemiology, Biostatistics and Occupational Health", br(),
-                                    "McGill University, Canada"),
+                                    "McGill University, Montreal, Canada"),
                                  
                                  tags$i(h5("mireille.schnitzer at umontreal.ca"))
                           )
                  ),
-                 
-                 hr(),
-                 
-                 fluidRow(column(2, img(src = "logo_MS.png", width = "100px")),
-                          column(10, h4(tags$b("Michael Schomaker")),
-                                 h4("Senior Statistician IeDEA HIV-Cohort", br(),
-                                    "School of Public Health and Family Medicine", br(),
-                                    "Center for Infectious Disease Epidemiology and Research", br(),
-                                    "University of Cape Town, Cape Town, South Africa"),
-                                 
-                                 tags$i(h5("michael.schomaker at uct.ac.za"))
-                          )
-                 ),
-                 
+
                  hr(),
                  # Acknowledgment
-                 h2("Acknowledgment"),
+                 h2(tags$b("Acknowledgment")),
                  tags$b("Funding information"), br(),
                  "Carlos III Institute of Health, Grant/Award Number: CP17/00206", br(), br(),
                  fluidRow(column(5, img(src = "logofeder.png", width = "75%")),
@@ -311,21 +353,29 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
         ) # End tabsetpanel
 ) # End UI
 
-
 # Server function -------------------------------
 server <- function(input, output) {
 
     # Formulae
     output$formulaA <- renderUI({
-        if(input$modelA == TRUE)  withMathJax("$$\\text{Model 1: SBP} = \\beta_{0} + \\beta_{1} \\text{AGE}$$")
+        if(input$modelA == TRUE) {
+         withMathJax("$$\\text{Model 1: SBP} = \\beta_{0} + \\beta_{1} \\text{SOD}$$
+                      $$\\text{(Unadjusted model)}$$") 
+        }
     })
     
     output$formulaB <- renderUI({
-        if(input$modelB == TRUE)  withMathJax("$$\\text{Model 2: SBP} = \\beta_{0} + \\beta_{1} \\text{AGE} + \\beta_{2} \\text{SOD}$$")
+        if(input$modelB == TRUE) {
+            withMathJax("$$\\text{Model 2: SBP} = \\beta_{0} + \\beta_{1} \\text{SOD} + \\beta_{2} \\text{AGE}$$
+                         $$\\text{(Adjusted model for age)}$$") 
+        }  
     })
     
     output$formulaC <- renderUI({
-        if(input$modelC == TRUE)  withMathJax("$$\\text{Model 3: SBP} = \\beta_{0} + \\beta_{1} \\text{AGE} + \\beta_{2} \\text{SOD} + \\beta_{3} \\text{PRO}$$")
+        if(input$modelC == TRUE) {
+            withMathJax("$$\\text{Model 3: SBP} = \\beta_{0} + \\beta_{1} \\text{SOD} + \\beta_{2} \\text{AGE} + \\beta_{3} \\text{PRO}$$
+                         $$\\text{(Adjusted model for age including the collider)}$$") 
+        }
     })
     
     # Simulated data
@@ -333,12 +383,14 @@ server <- function(input, output) {
                          generateData(input$beta1, input$beta2, n = 1000)})
     
     # Head from simulated data 
-    output$table_generateData<-renderTable(head(ObsData()))
+    output$table_generateData <- renderTable(head(ObsData()) %>% rename("Systolic blood pressure (mmHg)" = "sbp", "Age (years)" = "age",
+                                                                        "24-hour dietary sodium intake (g)" = "sodium",
+                                                                        "24-hour excretion of urinary protein (proteinuria) (mg)" = "proteinuria"))
     
     # Linear models fits + graphs
-    fit1 <- reactive({lm(sbp ~ age, data = ObsData())})
-    fit2 <- reactive({lm(sbp ~ age + sodium, data = ObsData())})
-    fit3 <- reactive({lm(sbp ~ age + proteinuria + sodium, data = ObsData())})
+    fit1 <- reactive({lm(sbp ~ sodium, data = ObsData())})
+    fit2 <- reactive({lm(sbp ~ sodium + age, data = ObsData())})
+    fit3 <- reactive({lm(sbp ~ sodium + age + proteinuria, data = ObsData())})
     
     grafico1 <- reactive({visreg(fit1(), points = list(cex = 1.5, pch = 1), jitter = 10, bty = "n")})
     grafico2 <- reactive({visreg(fit2(), points = list(cex = 1.5, pch = 1), jitter = 10, bty = "n")})
@@ -346,65 +398,49 @@ server <- function(input, output) {
     
     # Figures
     output$graph_model_1<-renderPlot({
-      if(input$modelA == TRUE) plot(grafico1(), gg = TRUE, ylab = "SBP (mmHg)", xlab = "Age (years)",
+      if(input$modelA == TRUE) plot(grafico1(), gg = TRUE, ylab = "SBP (mmHg)", xlab = "Sodium (gr)",
                                   points = list(size = 2, pch = 1, alpha = 0.4, col = "snow3"), line = list(col = "blue", size = 1.3)) + theme_classic()
     })
     
     output$graph_model_2<-renderPlot({
-      if(input$modelB == TRUE) plot(grafico2()[[1]], gg = TRUE, ylab=  "SBP (mmHg)", xlab="Age (years)",
+      if(input$modelB == TRUE) plot(grafico2()[[1]], gg = TRUE, ylab=  "SBP (mmHg)", xlab="Sodium (gr)",
                                   points = list(size = 2, pch = 1, alpha = 0.4, col = "snow3"), line = list(col = "blue", size = 1.3)) + theme_classic()
     })
     
     # Positive slope -> blue; negative -> red
     output$graph_model_3<-renderPlot({
             if(input$modelC == TRUE)
-              if(fit3()$coefficients["age"] > 0) plot(grafico3()[[1]], gg = TRUE, ylab = "SBP (mmHg)", xlab = "Age (years)",
+              if(fit3()$coefficients["sodium"] > 0) plot(grafico3()[[1]], gg = TRUE, ylab = "SBP (mmHg)", xlab = "Sodium (gr)",
                                                     points = list(size = 2, pch = 1, alpha = 0.4, col = "snow3"), line = list(col = "blue", size = 1.3)) + theme_classic()
               else 
-                plot(grafico3()[[1]], gg = TRUE, ylab = "SBP (mmHg)", xlab = "Age (years)",
+                plot(grafico3()[[1]], gg = TRUE, ylab = "SBP (mmHg)", xlab = "Sodium (gr)",
                      points = list(size = 2, pch = 1, alpha = 0.4, col = "snow3"), line = list(col = "red", size = 1.3)) + theme_classic()
     })
     
     # Coefficients
     output$coefficient_1<-renderUI({
-      if(input$modelA == TRUE)  withMathJax(sprintf("$$ \\beta_{1} = %.03f$$", fit1()$coefficients["age"]))
+        if(input$modelA == TRUE)  withMathJax(sprintf("$$ \\beta_{1} = %.03f$$", fit1()$coefficients["sodium"]))
     })
     
     output$coefficient_2<-renderUI({
-      if(input$modelB == TRUE)  withMathJax(sprintf("$$ \\beta_{1} = %.03f$$", fit2()$coefficients["age"]))
+      if(input$modelB == TRUE)  withMathJax(sprintf("$$ \\beta_{1} = %.03f$$", fit2()$coefficients["sodium"]))
     })
     
     output$coefficient_3<-renderUI({
-      if(input$modelC == TRUE)  withMathJax(sprintf("$$ \\beta_{1} = %.03f$$", fit3()$coefficients["age"]))
-    })
-    
-    # Figures for model 3 in data generation tab
-    output$plot_age <- renderPlot({
-      plot(grafico3()[[1]], gg = TRUE, ylab = "SBP (mmHg)", xlab = "Age (years)",
-           line=list(col = "darkmagenta", size = 1.3), points = list(size = 2, pch = 1, alpha = 0.4, col = "snow3"))+ theme_classic()
-    })
-    
-    output$plot_pro <- renderPlot({
-      plot(grafico3()[[2]], gg = TRUE, ylab = "SBP (mmHg)", xlab = "proteinuria (mg)",
-           points=list(size = 2, pch = 1, alpha = 0.4, col = "snow3"), line = list(col = "darkmagenta", size = 1.3)) + theme_classic()
-    })
-    
-    output$plot_sod <- renderPlot({
-      plot(grafico3()[[3]], gg = TRUE, ylab ="SBP (mmHg)", xlab = "Sodium (g)",
-           points = list(size = 2, pch = 1, alpha = 0.4, col = "snow3"), line = list(col = "darkmagenta", size = 1.3)) + theme_classic()
+      if(input$modelC == TRUE)  withMathJax(sprintf("$$ \\beta_{1} = %.03f$$", fit3()$coefficients["sodium"]))
     })
     
     # Download data
     output$download_data <- downloadHandler(
               filename = "data.csv",
               content = function(file) { 
-                write.csv(ObsData(), file) 
+              write.csv(ObsData(), file) 
               }
     )
     
     # Article PDF
     output$article <- renderUI({
-        tags$iframe(style = "height : 700px; width : 100%", src = "Paper_Collider.pdf")
+        tags$iframe(style = "height : 700px; width : 100%", src = "Manuscript.pdf")
     })
 
 }
