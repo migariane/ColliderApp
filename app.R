@@ -36,11 +36,11 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                             
                             h3(tags$b("What is a collider?")),
                             
-                            h4("A collider for a certain pair of variables such as an outcome as exposure is a third variable that
+                            h4("A collider for a certain pair of variables (outcome and exposure) is a third variable that
                                is influenced by both of them. Controlling for, or conditioning the analysis on (i.e., stratiffication or
                                regression) a collider, can introduce a spurious association between its causes (exposure and outcome)
                                potentially explaining why the medical literature is full of paradoxical findings [6]. In DAG terminology,
-                               a collider is the variable in the middle of an inverted fork (i.e., variable Z in A -> Z <- Y) [7]. While this methodological
+                               a collider is the variable in the middle of an inverted fork (i.e., variable W in A -> W <- Y) [7]. While this methodological
                                note will not close the vexing gap between correlation and causation, but
                                it will contribute to the increasing awareness and the general understanding of colliders among applied
                                epidemiologists and medical researchers.", style = "text-align: justify;"),
@@ -178,10 +178,10 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                    [1]. Sustained levels of systolic blood pressure over time are associated with increased cardio-vascular
                                    morbidity and mortality [2]. Summative evidence shows that exceeding the recommendations for 24-
                                    hour dietary sodium intake in grams is associated with increased levels of systolic blood pressure (SBP)
-                                   in mmHg [3]. SBP is associated with increasing age in years [4]. Thus, age is a confounder for the
+                                   in mmHg [3]. SBP is associated with increasing age [4]. Thus, age in years is a confounder for the
                                    association between sodium intake and SBP. However, high levels of 24-hour excretion of urinary protein
                                    (proteinuria) are associated with sustained high SBP, advanced age and increased 24-hour dietary sodium
-                                   intake. Therefore, proteinuria acts as a collider"),
+                                   intake. Therefore, proteinuria (PRO in the DAG) acts as a collider."),
                                  
                                  p("The data generation for the simulation is based on the structural relationship between the variables depicted on the Directed Acyclic Graph.
                                    We assumed that SBP increases with increasing age and dietary
@@ -207,7 +207,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                     "[4] Linda Van Horn, Jo Ann S Carson, Lawrence J Appel, Lora E Burke, Christina Economos, Wahida Karmally et al.
                                         Recommended dietary pattern to achieve adherence to the american
                                     heart association/american college of cardiology (aha/acc) guidelines: A scientific statement from the american heart
-                                    association. Circulation, 134(22):e505{e529, Nov 2016.",
+                                    association. Circulation, 134(22):e505e529, Nov 2016.",
                                     br(), br(),
                                     "[5] Michael F Carroll. Proteinuria in adults: A diagnositc approach. American family physician, 62(6), 2000.",
                                     style = "text-align: justify;"),
@@ -264,8 +264,10 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                     "Biomedical Research Institute of Granada", br(),
                                     "Non‐Communicable and Cancer Epidemiology Group (ibs.Granada)", br(),
                                     "University of Granada", br(),
-                                    "Honorary Assistant Professor of Epidemiology", br(),
-                                    "London School of Hygiene & Tropical Medicine"),
+                                    "Assistant Professor of Epidemiology (Honorary)", br(),
+                                    "London School of Hygiene & Tropical Medicine", br(),                                    
+                                    "Visitor Scientist, Department of Epidemiology", br(),  
+                                    "Harvard T.H Chan School of Public Health"),                         
                                  
                                  tags$i(h5("miguel.luque.easp at juntadeandalucia.es"))
                           )
@@ -383,9 +385,9 @@ server <- function(input, output) {
                          generateData(input$beta1, input$beta2, n = 1000)})
     
     # Head from simulated data 
-    output$table_generateData <- renderTable(head(ObsData()) %>% rename("Systolic blood pressure (mmHg)" = "sbp", "Age (years)" = "age",
-                                                                        "24-hour dietary sodium intake (g)" = "sodium",
-                                                                        "24-hour excretion of urinary protein (proteinuria) (mg)" = "proteinuria"))
+    output$table_generateData <- renderTable(head(ObsData())) #%>% rename("Systolic blood pressure (mmHg)" = "sbp", "Age (years)" = "age",
+                                                                        #"24-hour dietary sodium intake (g)" = "sodium",
+                                                                        #"24-hour excretion of urinary protein (proteinuria) (mg)" = "proteinuria"))
     
     # Linear models fits + graphs
     fit1 <- reactive({lm(sbp ~ sodium, data = ObsData())})
