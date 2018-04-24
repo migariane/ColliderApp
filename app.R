@@ -23,6 +23,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                  fluidRow(
                      column(5, div(img(src = "logo.png", width = "80%"), style = "text-align: center;")),
                      column(7,
+                            
                             h3(tags$b("Correlation is not causation")),
                             
                             h4("During the last 30 years, classical epidemiology has focussed on the control of confounding [1]. However, it
@@ -179,7 +180,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                             "SBP = Systolic blood pressure (mmHg)"),
                                   
                                   # Model Selection
-                                  h3("Select the model(s) to visualize the effect of SOD in SBP:"),
+                                  h4(tags$b("Select the model(s) to visualize the effect of SOD in SBP:")),
                                   checkboxInput(inputId = "modelA", 
                                                 label = div(h6(withMathJax("$$\\text{SBP}=\\beta_{0}+\\beta_{1}\\text{SOD}$$")), style = "margin-top:-10px"),
                                                 value = TRUE
@@ -199,7 +200,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                   
                                   # Slider for coefficients
                                   h5(withMathJax("Collider Model: $$\\text{PRO}=\\alpha_{0}+\\alpha_{1}\\text{SOD}+\\alpha_{2}\\text{SBP}+ 0.9 \\times \\text{AGE}$$")),
-                                  h6("Move the input slider to visualize the collider effect"),
+                                  h4(tags$b("Move the input slider to visualize the collider effect")),
                                   
                                   sliderInput(inputId = "beta1", 
                                               label = h5(withMathJax("$$\\alpha_1\\text{(Effect of SOD on PRO)}$$")),
@@ -403,27 +404,47 @@ server <- function(input, output) {
     grafico2 <- reactive({visreg(fit2(), points = list(cex = 1.5, pch = 1), jitter = 10, bty = "n")})
     grafico3 <- reactive({visreg(fit3(), points = list(cex = 1.5, pch = 1), jitter = 10, bty = "n")})
     
+    
     # Figures
+    alpha_points <- 0.4
+    color_points <- "black"
+    
     output$graph_model_1<-renderPlot({
       if(input$modelA == TRUE) plot(grafico1(), gg = TRUE, ylab = "SBP (mmHg)", xlab = "Sodium (gr)",
-                                  points = list(size = 2, pch = 1, alpha = 0.4, col = "black"), line = list(col = "blue", size = 1.3)) + theme_classic()
+                                  points = list(size = 2, pch = 1, alpha = alpha_points, col = color_points),
+                                  line = list(col = "blue", size = 1.3)) +
+                                  theme_classic() +
+                                  theme(axis.text = element_text(size = 15), axis.text.y = element_text(face = "bold"), axis.title = element_text(size = 17))
+        
     })
     
     output$graph_model_2<-renderPlot({
       if(input$modelB == TRUE) plot(grafico2()[[1]], gg = TRUE, ylab=  "SBP (mmHg)", xlab="Sodium (gr)",
-                                  points = list(size = 2, pch = 1, alpha = 0.4, col = "black"), line = list(col = "blue", size = 1.3)) + theme_classic()
+                                  points = list(size = 2, pch = 1, alpha = alpha_points, col = color_points),
+                                  line = list(col = "blue", size = 1.3)) +
+                                  theme_classic() + 
+                                  theme(axis.text = element_text(size = 15), axis.text.y = element_text(face = "bold"), axis.title = element_text(size = 17))
     })
     
     # Positive slope -> blue; negative -> red
     output$graph_model_3<-renderPlot({
             if(input$modelC == TRUE)
               if(fit3()$coefficients["sodium"] > 0) plot(grafico3()[[1]], gg = TRUE, ylab = "SBP (mmHg)", xlab = "Sodium (gr)",
-                                                    points = list(size = 2, pch = 1, alpha = 0.4, col = "black"), line = list(col = "blue", size = 1.3)) + theme_classic()
+                                                    points = list(size = 2, pch = 1, alpha = alpha_points, col = color_points),
+                                                    line = list(col = "blue", size = 1.3)) +
+                                                    theme_classic() + 
+                                                    theme(axis.text = element_text(size = 15), axis.text.y = element_text(face = "bold"), axis.title = element_text(size = 17))
               else 
                 plot(grafico3()[[1]], gg = TRUE, ylab = "SBP (mmHg)", xlab = "Sodium (gr)",
-                     points = list(size = 2, pch = 1, alpha = 0.4, col = "black"), line = list(col = "red", size = 1.3)) + theme_classic()
+                     points = list(size = 2, pch = 1, alpha = alpha_points, col = color_points),
+                     line = list(col = "red", size = 1.3)) +
+                     theme_classic() + 
+                     theme(axis.text = element_text(size = 15), axis.text.y = element_text(face = "bold"), axis.title = element_text(size = 17))
     })
     
+    
+    #axis.title.x = element_text(size=16), axis.text.x = element_text(size=16),axis.title.y = element_text(size=16, angle = 90), axis.text.y = element_text(size=16), legend.text =  element_text(size=13), legend.title =  element_text(size=13, face = "bold", hjust = 0.5),legend.position =   "bottom", legend.key.width = unit(1.75, "cm"))
+
     # Coefficients
     output$coefficient_1<-renderUI({
         if(input$modelA == TRUE)  withMathJax(sprintf("$$ \\beta_{1} = %.03f$$", fit1()$coefficients["sodium"]))
