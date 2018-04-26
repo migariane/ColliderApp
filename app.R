@@ -324,7 +324,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                  
                  fluidRow(column(2, img(src = "Anand.jpg", width = "100px")),
                           column(10, h4(tags$b("Anand Vaidya")),
-                                 h4("Assitant Professor of Medicine", br(),
+                                 h4("Assistant Professor of Medicine", br(),
                                     "Harvard Medical School, Harvard University", br(),
                                     "Director of the Center for Adrenal Disorders (Diabetes, Hypertension)", br(),
                                     "Brigham and Women's Hospital (Endocrinology), Boston, MA, USA"),
