@@ -1,3 +1,5 @@
+# By Daniel Redondo and Miguel Angel Luque-Fernandez
+ 
 library(shiny)
 library(shinythemes)
 library(ggplot2)
