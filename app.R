@@ -8,13 +8,12 @@ library(readr) # For "write_csv" function
 library(visreg) # Model visualization
 
 generateData <- function(alpha1, alpha2, n){
-    sodium  <- rnorm(n, 3.50, 0.50) 
-    age <- sodium * 18 + rnorm(n)
-    sbp <- 2.25 * sodium + 2.00 * age + rnorm(n)
-    proteinuria  <-  alpha1 * sodium + alpha2 * sbp + 0.9 * age + rnorm(n)
-    data.frame(sbp, age, sodium, proteinuria)
+    age <- rnorm(n, 65, 5)
+    sodium <- age/18 + rnorm(n)
+    sbp <- 1.05 * sodium + 2.00 * age + rnorm(n)
+    proteinuria <- alpha1 * age + alpha2 * sbp + 2.80 * sodium + rnorm(n)
+    data.frame(sbp, sodium, age, proteinuria)
 }
-
 
 # UI -------------------------------
 ui <- fluidPage(theme = shinytheme("cosmo"),
@@ -135,10 +134,12 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                  h4(tags$b("Data generation code")),
                                  tags$p("generateData <- function(n, seed){", style = "font-family: 'Courier New'"),
                                  tags$p("set.seed(seed)", br(),
-                                        "Sodium_gr <- rnorm(n, 3.50, 0.50)", br(),
-                                        "Age_years <- Sodium_gr * 18 + rnorm(n)", br(),
-                                        "sbp_in_mmHg <- 2.25 * Sodium_gr + 2.00 * Age_years + rnorm(n)", br(),
-                                        "Proteinuria_in_mg <- 0.90 * Age_years + 1.80 * sbp_in_mmHg + 3.50 * Sodium_gr + rnorm(n)", br(),
+                                        
+                                      
+                                        "Age_years <- rnorm(n, 65, 5)", br(),
+                                        "Sodium_gr <- Age_years / 18 + rnorm(n)", br(),
+                                        "sbp_in_mmHg <- 1.05 * Sodium_gr + 2.00 * Age_years + rnorm(n)", br(),
+                                        "Proteinuria_in_mg <- 0.90 * Age_years + 2.00 * sbp_in_mmHg + 2.80 *Sodium_gr + rnorm(n)", br(),
                                         "data.frame(sbp_in_mmHg, Sodium_gr, Age_years, Proteinuria_in_mg)",
                                         style = "font-family: 'Courier New'; padding: 15px"),
                                  
@@ -206,18 +207,18 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                   
                                   sliderInput(inputId = "beta1", 
                                               label = h5(withMathJax("$$\\alpha_1\\text{(Effect of SOD on PRO)}$$")),
-                                              min = 0.5,
+                                              min = 0,
                                               max = 5,
-                                              step = 0.05,
-                                              value = 0.5
+                                              step = 0.001,
+                                              value = 0
                                   ),
                                   
                                   sliderInput(inputId = "beta2", 
                                               label = h5(withMathJax("$$\\alpha_2\\text{(Effect of SBP on PRO)} $$")),
-                                              min = 0.5,
+                                              min = 0,
                                               max = 5,
-                                              step = 0.05,
-                                              value = 0.05
+                                              step = 0.001,
+                                              value = 0
                                   )
                      ),
                      

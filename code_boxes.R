@@ -27,10 +27,10 @@ visreg(fit3, "A", gg = TRUE, line = list(col = "red"),
 # Box 3 --------------------
 generateData <- function(n, seed){
   set.seed(seed)
-  Sodium_gr <- rnorm(n, 3.50, 0.50)
-  Age_years <- Sodium_gr * 18 + rnorm(n)
-  sbp_in_mmHg <- 2.25 * Sodium_gr + 2.00 * Age_years + rnorm(n)
-  Proteinuria_in_mg <- 0.90 * Age_years + 1.80 * sbp_in_mmHg + 3.50 *Sodium_gr + rnorm(n)
+  Age_years <- rnorm(n, 65, 5)
+  Sodium_gr <- Age_years/18 + rnorm(n)
+  sbp_in_mmHg <- 1.05 * Sodium_gr + 2.00 * Age_years + rnorm(n)
+  Proteinuria_in_mg <- 0.90 * Age_years + 2.00 * sbp_in_mmHg + 2.80 *Sodium_gr + rnorm(n)
   data.frame(sbp_in_mmHg, Sodium_gr, Age_years, Proteinuria_in_mg)
 }
 ObsData <- generateData(n = 1000, seed = 777)
