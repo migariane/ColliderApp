@@ -11,7 +11,7 @@ generateData <- function(alpha1, alpha2, n){
     age <- rnorm(n, 65, 5)
     sodium <- age/18 + rnorm(n)
     sbp <- 1.05 * sodium + 2.00 * age + rnorm(n)
-    proteinuria <- alpha1 * age + alpha2 * sbp + 2.80 * sodium + rnorm(n)
+    proteinuria <- alpha1 * sodium + alpha2 * sbp + 0.9 * age + rnorm(n)
     data.frame(sbp, sodium, age, proteinuria)
 }
 
