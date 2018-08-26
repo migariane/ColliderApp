@@ -203,7 +203,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                   
                                   # Slider for coefficients
                                   h5(withMathJax("Collider Model: $$\\text{PRO}=\\alpha_{0}+\\alpha_{1}\\text{SOD}+\\alpha_{2}\\text{SBP}+ 0.9 \\times \\text{AGE}$$")),
-                                  h4(tags$b("Move the input slider to visualize the collider effect")),
+                                  h4(tags$b("Move the input slider to visualize changes in the true causal effect")),
                                   
                                   sliderInput(inputId = "beta1", 
                                               label = h5(withMathJax("$$\\alpha_1\\text{(Effect of SOD on PRO)}$$")),
