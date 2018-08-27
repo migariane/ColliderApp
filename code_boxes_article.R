@@ -43,7 +43,7 @@ Y <- 0.3 * A + rnorm(N)
 W <- 1.2 * A + 0.9 * Y + rnorm(N)
 fit3 <- lm(Y ~ A)
 fit4 <- lm(Y ~ A + W)
-visreg(fit3, "A", gg = TRUE, line = list(col = "red"),
+visreg(fit4, "A", gg = TRUE, line = list(col = "red"),
        points = list(size = 2, pch = 1, col = "black")) + theme_classic()
 
 # Box 3 --------------------
