@@ -142,3 +142,45 @@ rr_graph <- function(fp){
 }
 
 fp <- rbind(result1,result2,result3);fp %>% rr_graph()
+
+# Box 6 -----------------------
+# Monte Carlo Simulations
+R<-1000
+true <- rep(NA, R)
+collider <- rep(NA,R)
+se <- rep(NA,R)
+set.seed(050472)
+
+for(r in 1:R) {
+    if (r%%10 == 0) cat(paste("This is simulation run number", r, "\n"))
+    #Function to generate data 
+    generateData <- function(n){
+        Age_years <- rnorm(n, 65, 5)
+        Sodium_gr <- Age_years / 18 + rnorm(n)
+        sbp_in_mmHg <- 1.05 * Sodium_gr + 2.00 * Age_years + rnorm(n)
+        Proteinuria_in_mg <- 0.90 * Age_years + 2.00 * sbp_in_mmHg + 2.80 *Sodium_gr + rnorm(n)
+        data.frame(sbp_in_mmHg, Sodium_gr, Age_years, Proteinuria_in_mg)
+    }
+    ObsData <- generateData(n=10000) 
+    # True effect
+    true[r] <- summary(lm(sbp_in_mmHg ~ Sodium_gr + Age_years, data = ObsData))$coef[2,1]
+    # Collider effect
+    collider[r] <- summary(lm(sbp_in_mmHg ~ Sodium_gr + Age_years + Proteinuria_in_mg, data = ObsData))$coef[2,1]
+    se[r] <- summary(lm(sbp_in_mmHg ~ Sodium_gr + Age_years + Proteinuria_in_mg, data = ObsData))$coef[2,2]
+}
+
+# Estimate of true effect
+mean(true)
+# Estimate of outcome regression including the collider 
+mean(collider)
+
+# simulated standard error/confidence interval of outcome regression
+lci <- (mean(collider) - 1.96*mean(se)); mean(lci)
+uci <- (mean(collider) + 1.96*mean(se)); mean(uci)
+
+# Bias 
+Bias <- (true - abs(collider));mean(Bias)
+# % Bias
+relBias <- ((true - abs(collider)) / true); mean(relBias) * 100
+# Plot bias
+plot(relbias)
