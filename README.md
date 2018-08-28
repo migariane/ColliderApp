@@ -23,9 +23,9 @@ Miguel Angel Luque-Fernandez, Michael Schomaker, Daniel Redondo-Sanchez,
 Maria Jose Sanchez Perez, Anand Vaidya and Mireille E. Schnitzer (2018). *Educational Note: Paradoxical Collider Effect in the Analysis of Non-Communicable Disease Epidemiological Data: a reproducible illustration and web application.* GitHub Repository: https://github.com/migariane/ColliderApp  
 
 
-**Figure**. Time of cancer death in minutes of the day in acute oncology and cancer palliative wards in Hong Kong, 2008 to 2016.  
+**Figure**. Collider web application 2018.  
 
-![Figure Link](https://github.com/migariane/ColliderApp/blob/master/Figure.tiff) 
+![Figure Link](https://github.com/migariane/ColliderApp/blob/master/Figure.png) 
  
 **Acknowledgment**: 
 Miguel Angel Luque Fernandez is supported by the Spanish National Institute of Health, Carlos III Miguel Servet I Investigator Award (CP17/00206). Maria Jose Sanchez Perez is supported by the Andalusian Department of Health. Research, Development and Innovation Office project grant PI-0152/2017. Anand Vaidya was supported by the National Institutes of Health (grants DK107407 and DK115392) and by the Doris Duke Charitable Foundation (award 2015085). Mireille E. Schnitzer is supported by a New Investigator Salary Award from the Canadian Institutes of Health Research.  
