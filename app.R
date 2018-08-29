@@ -42,10 +42,9 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                is influenced by both of them. Controlling for, or conditioning the analysis on (i.e., stratiffication or
                                regression) a collider, can introduce a spurious association between its causes (exposure and outcome)
                                potentially explaining why the medical literature is full of paradoxical findings [6]. In DAG terminology,
-                               a collider is the variable in the middle of an inverted fork (i.e., variable W in A -> W <- Y) [7]. While this methodological
-                               note will not close the vexing gap between correlation and causation, but
-                               it will contribute to the increasing awareness and the general understanding of colliders among applied
-                               epidemiologists and medical researchers.", style = "text-align: justify;"),
+                               a collider is the variable in the middle of an inverted fork (i.e., variable W in A -> W <- Y) [7]. We hope 
+                               that this methodological note will contribute to the increasing awareness and the general understanding 
+                               of “colliders” among applied epidemiologists and medical researchers.", style = "text-align: justify;"),
                             
                             hr(),
                             
@@ -91,21 +90,23 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                  
                                  h4(tags$b("Data generation process")),
                                  p("Based on a motivating example in non-communicable disease epidemiology, we generated a dataset with
-                                   1,000 observations to contextualize the effect of conditioning on a collider. High blood pressure is one of the most common comorbidities.
-                                   Nearly 1 in 3 Americans suffer from high blood pressure and more than half do not have it under control
-                                   [1]. Sustained levels of systolic blood pressure over time are associated with increased cardio-vascular
-                                   morbidity and mortality [2]. Summative evidence shows that exceeding the recommendations for 24-
-                                   hour dietary sodium intake in grams is associated with increased levels of systolic blood pressure (SBP)
-                                   in mmHg [3]. SBP is associated with increasing age [4]. Thus, age in years is a confounder for the
-                                   association between sodium intake and SBP. However, high levels of 24-hour excretion of urinary protein
-                                   (proteinuria) are associated with sustained high SBP, advanced age and increased 24-hour dietary sodium
-                                   intake. Therefore, proteinuria (PRO in the DAG) acts as a collider."),
+                                   1,000 observations to contextualize the effect of conditioning on a collider. Nearly 1 in 3 Americans 
+                                   suffer from high blood pressure and more than half do not have it under control [1].
+                                   Sustained levels of systolic blood pressure over time are associated with increased cardio-vascular
+                                   morbidity and mortality [2]. Summative evidence shows that exceeding the recommendations for 24-hour dietary sodium intake in grams (gr) 
+                                   is associated with increased levels of systolic blood pressure (SBP) in mmHg [3]. Furthermore, with advancing age, 
+                                   the kidney undergoes several anatomical and physiological changes that limit the adaptive mechanism responsible for maintaining 
+                                   the composition and volume of the extracellular fluid. These include a decline in glomerular filtration rate and the impaired 
+                                   ability to maintain water and sodium homeostasis in response to dietary and environmental changes [4]. 
+                                   Increasing age causes both high SBP and impaired sodium homeostasis. Thus age acts as a traditional confounder for the association 
+                                   between sodium intake and SBP (i.e. age is associated with both but it is not in the causal path between sodium intake and SBP). 
+                                   However, high levels of 24-hour excretion of urinary protein (proteinuria) are associated with sustained high SBP, advanced age 
+                                   and increased 24-hour dietary sodium intake. Therefore, proteinuria (PRO in the DAG) acts as a collider."),
                                  
                                  p("The data generation for the simulation is based on the structural relationship between the variables depicted on the Directed Acyclic Graph.
-                                   We assumed that SBP increases with increasing age and dietary
-                                   sodium intake. We simulated 24-hour excretion of urinary protein as a function of age, SBP, and
-                                   sodium intake. We assured that the range of values of the simulated data was biologically plausible and as
-                                   close to reality as possible [4, 5]."),
+                                    We simulated 24-hour excretion of urinary protein as a function of age, SBP, and sodium intake. 
+                                    We assured that the range of values of the simulated data was biologically plausible and as
+                                    close to reality as possible [5, 6]."),
                                  
                                  h4(tags$b("References")),
                                  
@@ -122,12 +123,15 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                     reduced dietary sodium and the dietary approaches to stop hypertension (dash) diet. New England journal
                                     of medicine, 344(1):3-10, 2001.",
                                     br(), br(),
-                                    "[4] Linda Van Horn, Jo Ann S Carson, Lawrence J Appel, Lora E Burke, Christina Economos, Wahida Karmally et al.
+                                    "[4] Tareen, N., Martins, D., Nagami, G., Levine, B., Norris, K. C.. Sodium disorders in the elderly. 
+                                    J Natl Med Assoc. 2005; 97, 217-224",
+                                    br(), br(),
+                                    "[5] Linda Van Horn, Jo Ann S Carson, Lawrence J Appel, Lora E Burke, Christina Economos, Wahida Karmally et al.
                                     Recommended dietary pattern to achieve adherence to the american
                                     heart association/american college of cardiology (aha/acc) guidelines: A scientific statement from the american heart
                                     association. Circulation, 134(22):e505e529, Nov 2016.",
                                     br(), br(),
-                                    "[5] Michael F Carroll. Proteinuria in adults: A diagnostic approach. American family physician, 62(6), 2000.",
+                                    "[6] Michael F Carroll. Proteinuria in adults: A diagnostic approach. American family physician, 62(6), 2000.",
                                     style = "text-align: justify;"),
                                  
                                  # Code
