@@ -1,25 +1,3 @@
-###############################################################################################
-# Educational Note: Paradoxical Collider Effect in the Analysis of Non-Communicable Disease 
-# Epidemiological Data: a reproducible illustration and web application
-###############################################################################################
-# Copyright (c) 2018  <Miguel Angel Luque-Fernandez>
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
-##############################################################################################
-
 # Box 1 --------------------
 library(visreg) # to visualize regression output
 library(ggplot2) # to visualize regression output
@@ -30,9 +8,12 @@ A <- 0.5 * W + rnorm(N)
 Y <- 0.3 * A + 0.4 * W + rnorm(N)
 fit1 <- lm(Y ~ A)
 fit2 <- lm(Y ~ A + W)
-visreg(fit1, "A", gg = TRUE, line = list(col = "blue"),
-       points = list(size = 2, pch = 1, col = "black")) + theme_classic()
-
+g1 <- visreg(fit1, "A", gg = TRUE, line = list(col = "blue"),
+       points = list(size = 2, pch = 1, col = "black")) + 
+       theme_classic() +
+       coord_cartesian(ylim = c(-4, 4)) +
+       ggtitle("Figure 2A") 
+       
 # Box 2 --------------------
 library(visreg)
 library(ggplot2)
@@ -43,8 +24,19 @@ Y <- 0.3 * A + rnorm(N)
 W <- 1.2 * A + 0.9 * Y + rnorm(N)
 fit3 <- lm(Y ~ A)
 fit4 <- lm(Y ~ A + W)
-visreg(fit4, "A", gg = TRUE, line = list(col = "red"),
-       points = list(size = 2, pch = 1, col = "black")) + theme_classic()
+g2 <- visreg(fit4, "A", gg = TRUE, line = list(col = "red"),
+     points = list(size = 2, pch = 1, col = "black")) + 
+     theme_classic() +
+     coord_cartesian(ylim = c(-4, 4)) +
+     ggtitle("Figure 2B") 
+
+library(gridExtra)
+pdf(file = "Figure2.pdf", 
+    width = 12, 
+    height = 6,
+    pointsize = 1)
+grid.arrange(g1, g2, ncol = 2)
+dev.off()
 
 # Box 3 --------------------
 generateData <- function(n, seed){
@@ -72,13 +64,28 @@ fit1 <- lm(sbp_in_mmHg ~ Sodium_gr + Age_years , data = ObsData);tidy(fit1)
 fit2 <- lm(sbp_in_mmHg ~ Sodium_gr + Age_years + Proteinuria_in_mg, data = ObsData);tidy(fit2)
 
 ## Models fit visualization in an additive scale 
-par(mfrow = c(1,3))
-visreg(fit0, ylab = "SBP in mmHg", line = list(col = "blue"),
-       points = list(cex = 1.5, pch = 1), jitter = 10, bty = "n")
-visreg(fit1, ylab = "SBP in mmHg", line = list(col = "blue"),
-       points = list(cex = 1.5, pch = 1), jitter = 10, bty = "n")
-visreg(fit2, ylab = "SBP in mmHg", line = list(col = "red"),
-       points = list(cex = 1.5, pch = 1), jitter = 10, bty = "n")
+m1 <- visreg(fit0, "Sodium_gr", gg = TRUE, xlab = "Sodium (gr)", ylab = "SBP (mmHg)", line = list(col = "blue"),
+       points = list(size = 2, pch = 1, col = "black"), bty = "n") + 
+       theme_classic() +
+       coord_cartesian(ylim = c(110, 165)) +
+       ggtitle("Figure 4A") 
+m2 <- visreg(fit1, "Sodium_gr", gg = TRUE, xlab = "Sodium (gr)", ylab = "SBP (mmHg)", line = list(col = "blue"),
+       points = list(size = 2, pch = 1, col = "black"), bty = "n") + 
+       theme_classic() +
+       coord_cartesian(ylim = c(129, 140)) +
+       ggtitle("Figure 4B") 
+m3 <- visreg(fit2, "Sodium_gr", gg = TRUE, xlab = "Sodium (gr)", ylab = "SBP (mmHg)", line = list(col = "red"),
+       points = list(size = 2, pch = 1, col = "black"), bty = "n") + 
+       theme_classic() +
+       coord_cartesian(ylim = c(129, 140)) +
+       ggtitle("Figure 4C") 
+library(gridExtra)
+pdf(file = "Figure4.pdf", 
+    width = 12, 
+    height = 6,
+    pointsize = 1)
+grid.arrange(m1, m2, m3, ncol = 3)
+dev.off()
 
 # Box 5 --------------------
 ## Models fit in a multiplicative scale
@@ -110,7 +117,7 @@ model <- c("Collider")
 result3 <- data.frame(model, or, lci, uci, stringsAsFactors = FALSE)
 
 # Models fit visualization (Forest plot function and plot) to depict the collider effect
-rr_graph <- function(fp){
+or_graph <- function(fp){
     
     tabla <- cbind(c("Model", paste(fp$model)),
                    c("Odds ratio", fp$or), 
@@ -127,7 +134,7 @@ rr_graph <- function(fp){
                                 ticks = gpar(cex = 1.1),
                                 xlab  = gpar(cex = 1.2),
                                 title = gpar(cex = 1.2)),
-               col = fpColors(box = "royalblue", lines = "royalblue", zero = "black"),
+               col = fpColors(box = "blue", lines = "blue", zero = "black"),
                cex = 0.9,
                clip = c(0, 10),
                zero = 1,
@@ -141,7 +148,7 @@ rr_graph <- function(fp){
     )
 }
 
-fp <- rbind(result1,result2,result3);fp %>% rr_graph()
+fp <- rbind(result1,result2,result3);fp %>% or_graph()
 
 # Box 6 -----------------------
 # Monte Carlo Simulations
@@ -171,16 +178,19 @@ for(r in 1:R) {
 
 # Estimate of true effect
 mean(true)
+
 # Estimate of outcome regression including the collider 
 mean(collider)
 
-# simulated standard error/confidence interval of outcome regression
+# Standard error/confidence 
 lci <- (mean(collider) - 1.96*mean(se)); mean(lci)
 uci <- (mean(collider) + 1.96*mean(se)); mean(uci)
 
 # Bias 
 Bias <- (true - abs(collider));mean(Bias)
+
 # % Bias
 relBias <- ((true - abs(collider)) / true); mean(relBias) * 100
+
 # Plot bias
 plot(relbias)
