@@ -58,12 +58,12 @@ print(xtable(summary(ObsData)))
 library(broom) # to visualize regression models output
 library(visreg)
 
-## Models fit in an additive scale
+## Models fit on an additive scale
 fit0 <- lm(sbp_in_mmHg ~ Sodium_gr, data = ObsData);tidy(fit0)
 fit1 <- lm(sbp_in_mmHg ~ Sodium_gr + Age_years , data = ObsData);tidy(fit1)
 fit2 <- lm(sbp_in_mmHg ~ Sodium_gr + Age_years + Proteinuria_in_mg, data = ObsData);tidy(fit2)
 
-## Models fit visualization in an additive scale 
+## Models fit visualization on an additive scale 
 m1 <- visreg(fit0, "Sodium_gr", gg = TRUE, xlab = "Sodium (gr)", ylab = "SBP (mmHg)", line = list(col = "blue"),
        points = list(size = 2, pch = 1, col = "black"), bty = "n") + 
        theme_classic() +
