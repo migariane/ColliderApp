@@ -136,14 +136,15 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                  
                                  # Code
                                  h4(tags$b("Data generation code")),
+                                 tags$p("alpha1 and alpha2 are parameters you can modify in 'Collider Visualization'."),
+                                 
                                  tags$p("generateData <- function(n, seed){", style = "font-family: 'Courier New'"),
+                                 
                                  tags$p("set.seed(seed)", br(),
-                                        
-                                      
                                         "Age_years <- rnorm(n, 65, 5)", br(),
                                         "Sodium_gr <- Age_years / 18 + rnorm(n)", br(),
                                         "sbp_in_mmHg <- 1.05 * Sodium_gr + 2.00 * Age_years + rnorm(n)", br(),
-                                        "Proteinuria_in_mg <- 0.90 * Age_years + 2.00 * sbp_in_mmHg + 2.80 *Sodium_gr + rnorm(n)", br(),
+                                        "Proteinuria_in_mg <- 0.90 * Age_years + alpha1 * Sodium_gr + alpha2 * sbp_in_mmHg + rnorm(n)", br(),
                                         "data.frame(sbp_in_mmHg, Sodium_gr, Age_years, Proteinuria_in_mg)",
                                         style = "font-family: 'Courier New'; padding: 15px"),
                                  
@@ -213,7 +214,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                               label = h5(withMathJax("$$\\alpha_1\\text{(Effect of SOD on PRO)}$$")),
                                               min = 0,
                                               max = 5,
-                                              step = 0.001,
+                                              step = 0.05,
                                               value = 0
                                   ),
                                   
@@ -221,7 +222,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                               label = h5(withMathJax("$$\\alpha_2\\text{(Effect of SBP on PRO)} $$")),
                                               min = 0,
                                               max = 5,
-                                              step = 0.001,
+                                              step = 0.05,
                                               value = 0
                                   )
                      ),
@@ -246,6 +247,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                           column(4, h5(uiOutput("coefficient_2"))),
                           column(4, h5(uiOutput("coefficient_3")))
                  ),
+                 
                  hr(),
                  
                  div(h3("Assumed DAG under respective model"), style = "text-align: center"),

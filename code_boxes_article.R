@@ -193,4 +193,4 @@ Bias <- (true - abs(collider));mean(Bias)
 relBias <- ((true - abs(collider)) / true); mean(relBias) * 100
 
 # Plot bias
-plot(relbias)
+plot(relBias)
