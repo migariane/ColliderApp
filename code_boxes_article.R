@@ -20,10 +20,10 @@ library(ggplot2)
 N <- 1000
 set.seed(777)
 A <- rnorm(N)
-Y <- 0.3 * A + rnorm(N)
-W <- 1.2 * A + 0.9 * Y + rnorm(N)
+Y <- -1.2 * A + rnorm(N)
+C <- +1 * A + +1 * Y + rnorm(N)
 fit3 <- lm(Y ~ A)
-fit4 <- lm(Y ~ A + W)
+fit4 <- lm(Y ~ A + C)
 g2 <- visreg(fit4, "A", gg = TRUE, line = list(col = "red"),
      points = list(size = 2, pch = 1, col = "black")) + 
      theme_classic() +

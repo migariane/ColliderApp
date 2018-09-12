@@ -4,20 +4,33 @@ library(shiny)
 library(shinythemes)
 library(ggplot2)
 library(dplyr)
-library(readr) # For "write_csv" function
+library(readr)  # For "write_csv" function
 library(visreg) # Model visualization
 
 generateData <- function(alpha1, alpha2, n){
     age <- rnorm(n, 65, 5)
-    sodium <- age/18 + rnorm(n)
+    sodium <- age / 18 + rnorm(n)
     sbp <- 1.05 * sodium + 2.00 * age + rnorm(n)
     proteinuria <- alpha1 * sodium + alpha2 * sbp + 0.9 * age + rnorm(n)
     data.frame(sbp, sodium, age, proteinuria)
 }
 
+url_twitter <- "https://twitter.com/intent/tweet?text=Colliders%20in%20Epidemiology:%20an%20educational%20interactive%20web%20application&url=http://watzilei.com/shiny/collider/&via=WATZILEI"
+
 # UI -------------------------------
 ui <- fluidPage(theme = shinytheme("cosmo"),
-      titlePanel(HTML("<b>Colliders in Epidemiology: an educational interactive web application</b>"), windowTitle = "Collider"),
+      
+      fluidRow(
+          column(10, titlePanel(HTML("<b>Colliders in Epidemiology: an educational interactive web application</b>"),
+                               windowTitle = "Collider")),
+          column(2, br(), 
+                    actionButton("twitter",
+                                 label = "Share it on Twitter",
+                                 icon = icon("twitter"),
+                                 style="color: #fff; background-color: #00ACED; border-color: #00ACED",
+                                 onclick = sprintf("window.open('%s')", url_twitter))
+      )
+      ),
       tabsetPanel(
         # Tab 1: Motivation -------------------------------
         tabPanel("Motivation", br(), br(),
@@ -30,7 +43,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                             h4("During the last 30 years, classical epidemiology has focussed on the control of confounding [1]. However, it
                                is only recently that epidemiologists have started to focus on the bias produced by colliders and mediators
                                in addition to confounders [2, 3]. In the epidemiological literature different explanations have been
-                               proposed to describe the paradoxical protective effect of established risk factors. Such as, for example,
+                               proposed to describe the paradoxical protective effect of established risk factors; such as, for example,
                                the protective effect of maternal smoking on infant mortality and the incidence of pre-eclampsia, namely
                                the birth weight and the smoking pre-eclampsia paradoxes [4, 5].", style = "text-align: justify;"),
                             
@@ -39,19 +52,19 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                             h3(tags$b("What is a collider?")),
                             
                             h4("A collider for a certain pair of variables (outcome and exposure) is a third variable that
-                               is influenced by both of them. Controlling for, or conditioning the analysis on (i.e., stratiffication or
+                               is influenced by both. Controlling for, or conditioning the analysis on (i.e., stratiffication or
                                regression) a collider, can introduce a spurious association between its causes (exposure and outcome)
                                potentially explaining why the medical literature is full of paradoxical findings [6]. In DAG terminology,
                                a collider is the variable in the middle of an inverted fork (i.e., variable W in A -> W <- Y) [7]. We hope 
-                               that this methodological note will contribute to the increasing awareness and the general understanding 
-                               of “colliders” among applied epidemiologists and medical researchers.", style = "text-align: justify;"),
+                               that this web application will contribute to the increasing awareness and the general understanding 
+                               of ''colliders'' among applied epidemiologists and medical researchers.", style = "text-align: justify;"),
                             
                             hr(),
                             
                             h3(tags$b("Objective")),
                             
-                            h4("To illustrate with an educational purpose the effect of conditioning on a collider based on a realistic non-communicable disease
-                                epidemiology example (hypertension and dietary sodium intake).
+                            h4("The objective of this (educational) web application is to illustrate the effect of conditioning on a collider,
+                                based on a realistic non-communicable disease epidemiology example (hypertension and dietary sodium intake).
                                 We estimate the effect of 24-hour dietary sodium intake in grams (exposure) on systolic blood pressure (outcome)
                                 accounting for the effect of age (confounder). The objective of the illustration is to show the paradoxical effect of
                                 24-hour dietary sodium intake on systolic blood pressure after conditioning on 24-hour excretion of urinary protein (collider).
@@ -92,16 +105,16 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                  p("Based on a motivating example in non-communicable disease epidemiology, we generated a dataset with
                                    1,000 observations to contextualize the effect of conditioning on a collider. Nearly 1 in 3 Americans 
                                    suffer from high blood pressure and more than half do not have it under control [1].
-                                   Sustained levels of systolic blood pressure over time are associated with increased cardio-vascular
+                                   Increased levels of systolic blood pressure over time are associated with increased cardio-vascular
                                    morbidity and mortality [2]. Summative evidence shows that exceeding the recommendations for 24-hour dietary sodium intake in grams (gr) 
                                    is associated with increased levels of systolic blood pressure (SBP) in mmHg [3]. Furthermore, with advancing age, 
                                    the kidney undergoes several anatomical and physiological changes that limit the adaptive mechanism responsible for maintaining 
                                    the composition and volume of the extracellular fluid. These include a decline in glomerular filtration rate and the impaired 
                                    ability to maintain water and sodium homeostasis in response to dietary and environmental changes [4]. 
-                                   Increasing age causes both high SBP and impaired sodium homeostasis. Thus age acts as a traditional confounder for the association 
-                                   between sodium intake and SBP (i.e. age is associated with both but it is not in the causal path between sodium intake and SBP). 
+                                   Increasing age causes both high SBP and impaired sodium homeostasis. Thus age acts as a confounder for the association 
+                                   between sodium intake and SBP (i.e. age is on the back-door path between sodium intake and SBP). 
                                    However, high levels of 24-hour excretion of urinary protein (proteinuria) are associated with sustained high SBP, advanced age 
-                                   and increased 24-hour dietary sodium intake. Therefore, proteinuria (PRO in the DAG) acts as a collider."),
+                                   and increased 24-hour dietary sodium intake. Therefore, proteinuria (PRO in the DAG) acts as a collider via the path SOD -> PRO <- SBP."),
                                  
                                  p("The data generation for the simulation is based on the structural relationship between the variables depicted on the Directed Acyclic Graph.
                                     We simulated 24-hour excretion of urinary protein as a function of age, SBP, and sodium intake. 
@@ -136,9 +149,9 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                  
                                  # Code
                                  h4(tags$b("Data generation code")),
-                                 tags$p("alpha1 and alpha2 are parameters you can modify in 'Collider Visualization'."),
+                                 tags$p("alpha1 (effect of SOD on PRO) and alpha2 (effect of SBP on PRO) are parameters you can modify in 'Collider Visualization'."),
                                  
-                                 tags$p("generateData <- function(n, seed){", style = "font-family: 'Courier New'"),
+                                 tags$p("generateData <- function(n, seed, alpha1, alpha2){", style = "font-family: 'Courier New'"),
                                  
                                  tags$p("set.seed(seed)", br(),
                                         "Age_years <- rnorm(n, 65, 5)", br(),
@@ -146,12 +159,15 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                         "sbp_in_mmHg <- 1.05 * Sodium_gr + 2.00 * Age_years + rnorm(n)", br(),
                                         "Proteinuria_in_mg <- 0.90 * Age_years + alpha1 * Sodium_gr + alpha2 * sbp_in_mmHg + rnorm(n)", br(),
                                         "data.frame(sbp_in_mmHg, Sodium_gr, Age_years, Proteinuria_in_mg)",
-                                        style = "font-family: 'Courier New'; padding: 15px"),
+                                        style = "font-family: 'Courier New'; margin-left: 15px"),
                                  
                                  tags$p("}", style = "font-family: 'Courier New'"),
                                  
-                                 h4(tags$b("Data display and download")), br(),
-                                 p("head(generateData(1000, 777))", style = "font-family: 'Courier New'"),
+                                 h4(tags$b("Data display and download")), 
+                                 
+                                 textOutput("head"),
+                                 tags$head(tags$style("#head{font-family: 'Courier New';}")),
+                                 
                                  tableOutput("table_generateData"),
                                  downloadButton(outputId = "download_data", label = tags$b("Download 1.000 simulations (.csv)"))
                                  ),
@@ -274,7 +290,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                  h2(tags$b("Authorship")), br(),
                  fluidRow(column(2, img(src = "logo_MALF.png", width = "100px")),
                           column(10, h4(tags$b("Miguel Angel Luque-Fernandez (PI)")),
-                                 h4("Scientific Researcher in Epidemiology and Biostatistics", br(),
+                                 h4("Scientific Researcher of Epidemiology and Biostatistics", br(),
                                     "Biomedical Research Institute of Granada", br(),
                                     "Non‐Communicable and Cancer Epidemiology Group (ibs.Granada)", br(),
                                     "University of Granada", br(),
@@ -305,7 +321,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                  
                  fluidRow(column(2, img(src = "logo_MS.png", width = "100px")),
                           column(10, h4(tags$b("Michael Schomaker")),
-                                 h4("Senior Statistician IeDEA HIV-Cohort", br(),
+                                 h4("Senior Researcher and Statistician", br(),
                                     "School of Public Health and Family Medicine", br(),
                                     "Center for Infectious Disease Epidemiology and Research", br(),
                                     "University of Cape Town, Cape Town, South Africa"),
@@ -400,6 +416,8 @@ server <- function(input, output) {
                          generateData(input$beta1, input$beta2, n = 1000)})
     
     # Head from simulated data 
+    output$head <- renderText(paste0("head(generateData(n = 1000, seed = 777, alpha1 = ", input$beta1, ", alpha2 = ", input$beta2, "))"))
+    
     output$table_generateData <- renderTable(head(ObsData())) #%>% rename("Systolic blood pressure (mmHg)" = "sbp", "Age (years)" = "age",
                                                                         #"24-hour dietary sodium intake (g)" = "sodium",
                                                                         #"24-hour excretion of urinary protein (proteinuria) (mg)" = "proteinuria"))
