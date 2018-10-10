@@ -199,7 +199,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                               min = 0,
                                               max = 5,
                                               step = 0.05,
-                                              value = 0
+                                              value = 0.5
                                   ),
                                   
                                   sliderInput(inputId = "alpha2", 
@@ -207,7 +207,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                               min = 0,
                                               max = 5,
                                               step = 0.05,
-                                              value = 0
+                                              value = 0.5
                                   ),
                                   
                                   # Legend
