@@ -45,7 +45,7 @@ generateData <- function(n, seed){
   Sodium_gr <- Age_years / 18 + rnorm(n)
   sbp_in_mmHg <- 1.05 * Sodium_gr + 2.00 * Age_years + rnorm(n)
   hypertension <- ifelse(sbp_in_mmHg>=140,1,0)
-  Proteinuria_in_mg <- 0.90 * Age_years + 2.00 * sbp_in_mmHg + 2.80 *Sodium_gr + rnorm(n)
+  Proteinuria_in_mg <- 2.00 * sbp_in_mmHg + 2.80 *Sodium_gr + rnorm(n)
   data.frame(sbp_in_mmHg, hypertension, Sodium_gr, Age_years, Proteinuria_in_mg)
 }
 ObsData <- generateData(n = 1000, seed = 777)
@@ -165,7 +165,7 @@ for(r in 1:R) {
         Age_years <- rnorm(n, 65, 5)
         Sodium_gr <- Age_years / 18 + rnorm(n)
         sbp_in_mmHg <- 1.05 * Sodium_gr + 2.00 * Age_years + rnorm(n)
-        Proteinuria_in_mg <- 0.90 * Age_years + 2.00 * sbp_in_mmHg + 2.80 *Sodium_gr + rnorm(n)
+        Proteinuria_in_mg <- 2.00 * sbp_in_mmHg + 2.80 *Sodium_gr + rnorm(n)
         data.frame(sbp_in_mmHg, Sodium_gr, Age_years, Proteinuria_in_mg)
     }
     ObsData <- generateData(n=10000) 
