@@ -1,6 +1,7 @@
 .Rproj
+.Rproj.user
 .Rhistory
 .RData
 .Ruserdata
 .Rapp.history
-**.pdf
+.EpiCollider.Rproj
