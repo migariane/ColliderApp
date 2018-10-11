@@ -1,8 +1,8 @@
-.Rproj
+**.Rproj
 .Rhistory
 .RData
 .Ruserdata
 .Rapp.history
 **.pdf
 .gitignore
-.Rproj.user
+**.Rproj.user
