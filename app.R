@@ -66,7 +66,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                             h3(tags$b("References")),
                             h5("[1] Sander Greenland and Hal Morgenstern. Confounding in health research. Annual Review of Public Health, 22(1):189-212, May 2001.",
                                br(), br(),
-                               "[2] Stephen R Cole, RobertWPlatt, Enrique F Schisterman, Haitao Chu, DanielWestreich, David Richardson, and Charles
+                               "[2] Stephen R Cole, Robert W Platt, Enrique F Schisterman, Haitao Chu, Daniel Westreich, David Richardson, and Charles
                                 Poole. Illustrating bias due to conditioning on a collider. International Journal of Epidemiology, 39(2):417-420, Nov 2009.",
                                br(), br(),
                                "[3] Tyler J. Vanderweele and Stijn Vansteelandt. Conceptual issues concerning mediation, interventions and composition.
@@ -99,10 +99,10 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                    is associated with increased levels of systolic blood pressure (SBP) in mmHg [3]. Furthermore, with advancing age, 
                                    the kidney undergoes several anatomical and physiological changes that limit the adaptive mechanism responsible for maintaining 
                                    the composition and volume of the extracellular fluid. These include a decline in glomerular filtration rate and the impaired 
-                                   ability to maintain water and sodium homeostasis in response to dietary and environmental changes [4]. 
-                                   Increasing age causes both high SBP and impaired sodium homeostasis. Thus age acts as a confounder for the association 
-                                   between sodium intake and SBP (i.e. age is on the back-door path between sodium intake and SBP). 
-                                   However, high levels of 24-hour excretion of urinary protein (proteinuria) are associated with sustained high SBP 
+                                   ability to maintain water and sodium homeostasis in response to dietary and environmental changes [4]. Likewise, age is associated with
+                                   structural changes in the arteries and thus SBP [2]. Age is a common cause of both high SBP and impaired sodium homeostasis. 
+                                   Thus age acts as a confounder for the association between sodium intake and SBP (i.e. age is on the back-door path between sodium intake and SBP). 
+                                   However, high levels of 24-hour excretion of urinary protein (proteinuria) are caused by sustained high SBP 
                                    and increased 24-hour dietary sodium intake. Therefore, proteinuria (PRO in the DAG) acts as a collider via the path SOD -> PRO <- SBP."),
                                  p("The data generation for the simulation is based on the structural relationship between the variables depicted on the Directed Acyclic Graph.
                                     We simulated 24-hour excretion of urinary protein as a function of age, SBP, and sodium intake. 
@@ -266,8 +266,8 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
         
        
         # Tab 4: Article -------------------------------
-        tabPanel("Article", br(), br(),
-                 uiOutput("article")),
+        #tabPanel("Article", br(), br(),
+        #         uiOutput("article")),
 
         # Tab 5: Authorship & Acknowledgment -------------------------------
         tabPanel("Credits & Acknowledgment",
@@ -461,9 +461,9 @@ server <- function(input, output) {
     )
     
     # Article PDF
-    output$article <- renderUI({
-        tags$iframe(style = "height : 700px; width : 100%", src = "Manuscript.pdf")
-    })
+    #output$article <- renderUI({
+    #    tags$iframe(style = "height : 700px; width : 100%", src = "Manuscript.pdf")
+    #})
 
 }
 
