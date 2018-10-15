@@ -40,7 +40,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                      column(7,
                             h3(tags$b("Correlation is not causation")),
                             h4("During the last 30 years, classical epidemiology has focussed on the control of confounding [1]. However, it
-                               is only recently that epidemiologists have started to focus on the bias produced by colliders and mediators
+                               is only recently that epidemiologists have started to focus on the bias produced by colliders 
                                in addition to confounders [2, 3]. In the epidemiological literature different explanations have been
                                proposed to describe the paradoxical protective effect of established risk factors; such as, for example,
                                the protective effect of maternal smoking on infant mortality and the incidence of pre-eclampsia, namely
