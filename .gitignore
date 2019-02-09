@@ -1,4 +1,4 @@
-**.Rproj
+EpiCollider.Rproj
 .Rhistory
 .RData
 .Ruserdata
@@ -6,3 +6,4 @@
 **.pdf
 .gitignore
 **.Rproj.user
+.Rproj.user

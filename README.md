@@ -12,7 +12,7 @@ Classical epidemiology has focused on the control of confounding but it is only 
 **Keywords**:  
 epidemiological methods, causality, noncommunicable disease epidemiology  
 
-This repository provide free open access for replicability and educational purposes to the data and code used in the educational note:  
+This repository provides free open access for replicability and educational purposes to the data and code used in the educational note:  
 
 1. app.R 
 2. code_boxes_article.R  
@@ -21,6 +21,9 @@ Please **cite** this repository as follows:
 
 Miguel Angel Luque-Fernandez, Michael Schomaker, Daniel Redondo-Sanchez,
 Maria Jose Sanchez Perez, Anand Vaidya and Mireille E. Schnitzer (2018). *Educational Note: Paradoxical Collider Effect in the Analysis of Non-Communicable Disease Epidemiological Data: a reproducible illustration and web application.* GitHub Repository: https://github.com/migariane/ColliderApp  
+
+
+[![DOI](https://zenodo.org/badge/125421623.svg)](https://zenodo.org/badge/latestdoi/125421623)
 
 
 **Figure**. Collider web application 2018.  
