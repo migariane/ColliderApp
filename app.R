@@ -22,8 +22,13 @@ url_twitter <- "https://twitter.com/intent/tweet?text=Colliders%20in%20Epidemiol
 ui <- fluidPage(theme = shinytheme("cosmo"),
       
       fluidRow(
-          column(10, titlePanel(HTML("<b>Colliders in Epidemiology: an educational interactive web application</b>"),
+          column(8, titlePanel(HTML("<b>Colliders in Epidemiology: an educational interactive web application</b>"),
                                windowTitle = "Collider")),
+          
+          column(2, br(), actionButton(inputId="download", label="Read article in IJE", 
+                       icon = icon("file-alt"), 
+                       onclick ="window.open('https://academic.oup.com/ije/advance-article/doi/10.1093/ije/dyy275/5248195', '_blank')")),
+
           column(2, br(), 
                     actionButton("twitter",
                                  label = "Share it on Twitter",
