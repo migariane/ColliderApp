@@ -197,4 +197,3 @@ mean(relBias) * 100
 # Pragmatic confidence interval based on average standard error
 lci <- (mean(collider) - 1.96 * mean(se))
 uci <- (mean(collider) + 1.96 * mean(se))
->>>>>>> 132a2bf3b2e5bf15097b92e91961c8690106e668
