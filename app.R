@@ -287,8 +287,8 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
                                     "Biomedical Network Research Centers of Epidemiology and Public Health (CIBERESP), ISCIII, Madrid, Spain", br(),
                                     "Assistant Professor of Epidemiology (Honorary)", br(),
                                     "London School of Hygiene & Tropical Medicine, London, UK", br(),                                    
-                                    "Visitor Scientist, Department of Epidemiology", br(),  
-                                    "Harvard T.H Chan School of Public Health, Boston, MA, USA"),                         
+                                    "Scientific Collaborator, Department of Epidemiology", br(),  
+                                    "Harvard T.H. Chan School of Public Health, Boston, MA, USA"),                         
                                  tags$i(h5("miguel.luque.easp at juntadeandalucia.es"))
                           )
                  ),
